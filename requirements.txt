@@ -1,0 +1,4 @@
+qrcode
+requests
+pygame
+flask
