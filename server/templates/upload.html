@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width">
+        <title>Upload file</title>
+    </head>
+    <body>
+        <h1>qrTransfer</h1>
+        <form method=post enctype=multipart/form-data>
+            <div class="container">
+                    <input type="file" name="file"
+                        id="file" value="select file">
+                    <label for="file" id="select" class="btn">
+                       <p id='fileName'>
+                        select file
+                       </p> 
+                    </label>
+                <input type="submit" name="submit" class="btn"
+                    id="submit" value="upload file">
+            </div>
+        </form>
+    </body>
+    <style type="text/css" media="screen">
+        body{
+            background-color: rgb(43, 44, 44);
+        }
+
+        h1 {
+            display: block;
+            text-align: center;
+            color: lightgray;
+        }
+
+        .container {
+            display: flex;
+            margin: 10px auto;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            border: 1px solid rgb(70, 70, 70);
+            border-radius: 5px;
+        }
+
+        #file {
+            display: block;
+        }
+
+        #file {
+            display: none;
+        }
+
+        #select {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #fileName {
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .btn {
+            width: 50%;
+            height: 40px;
+            vertical-align: middle;
+            text-align: center;
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 14px;
+            background-color: rgb(75, 75, 75);
+            color: lightgray;
+            border: 1px solid black;
+            border-radius: 7px;
+            margin: 5px;
+        }
+
+        .btn:hover {
+            color: black;
+            background-color: rgb(133, 133, 133);
+            border-color: rgb(41, 41, 41);
+        }
+
+        .btn:active {
+            color: black;
+            background-color: rgb(97, 97, 97);
+            border-color: rgb(41, 41, 41);
+        }
+
+    </style>
+
+    <script>
+        function update(e) {
+            fileName.textContent = file.files[0].name;
+        }
+
+        const file = document.querySelector('#file');
+        const fileName = document.querySelector('#fileName');
+
+        file.addEventListener('change', update)
+    </script>
+
+</html>

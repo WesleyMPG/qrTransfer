@@ -1,5 +1,7 @@
 import requests as req
-import pathlib, os, subprocess
+import pathlib, os
+from shutil import copy2
+from utils import get_local_network_ip, config
 
 
 class Uploader(object):
@@ -23,14 +25,13 @@ class Uploader(object):
 
     def done(self):
         if self.__mode == Uploader.LOCAL_MODE:
-            os.system(f'rm {self.__path}')
+            os.remove(self.__path)
 
     def __local_upload(self, path):
         self.__copy_file(pathlib.Path(path))
         filename = pathlib.Path(path).name
-        ip = self.__get_local_network_ip()
+        ip = get_local_network_ip()
         return f'http://{ip}:5000/download/{filename}'
-
 
     def __remote_upload(self, path):
         """Uploads the file to file.io
@@ -43,19 +44,10 @@ class Uploader(object):
         return r.json()['link']
 
     def __copy_file(self, path : pathlib.Path):
-        this_file_dir = pathlib.Path(__file__).parent.resolve()
-        destination = pathlib.PurePath(this_file_dir, 'static')
-        os.system(f'cp {path} {destination}')
+        destination = config['STATIC_FOLDER']
+        copy2(path, destination)
 
         self.__path = pathlib.PurePath(destination, path.name)
-
-    @staticmethod
-    def __get_local_network_ip():
-        sub = subprocess.Popen(
-            "hostname -I | awk '{print $1}'",
-            shell=True, stdout=subprocess.PIPE)
-        ip = sub.stdout.read()[:-1].decode()
-        return ip
 
 
 if __name__ == "__main__":

@@ -1,14 +1,18 @@
-from threading import Thread
-import requests as req
-from flask import Flask, request, send_file, redirect, flash, render_template
-from werkzeug.utils import secure_filename
 import os
+import requests as req
+from threading import Thread
+from werkzeug.utils import secure_filename
+from flask import Flask, request, send_file, redirect, flash, render_template
+from utils import config
+
 
 __all__ = ['Server']
 
-app = Flask(__name__)
-app.config['UPLOAD_FOLDER'] = '/home/wesley/Downloads/'
+
+app = Flask(__name__, static_folder=config['STATIC_FOLDER'])
+app.config['UPLOAD_FOLDER'] = config['UPLOAD_FOLDER']
 app.secret_key = os.urandom(16).hex()
+
 
 @app.route('/status-check/')
 def hello_world():
@@ -17,7 +21,7 @@ def hello_world():
 
 @app.route('/download/<path:path>')
 def download(path):
-    return send_file(f'static/{path}')
+    return send_file(f'{config["STATIC_FOLDER"]}/{path}')
 
 
 @app.route('/sdwn/')
@@ -30,6 +34,23 @@ def shutdown():
     shut()
     return 'Done'
 
+
+@app.route('/upload/', methods=['GET', 'POST'])
+def upload():
+    if request.method == 'POST':
+        if 'file' not in request.files:
+            return redirect(request.url)
+        file = request.files['file']
+        if file.filename == '':
+            flash('No selected file')
+            return redirect(request.url)
+        if file:
+            filename = secure_filename(file.filename)
+            folder = app.config['UPLOAD_FOLDER']
+            save_path = os.path.join(folder, filename)
+            file.save(save_path)
+            return 'Done'
+    return render_template('upload.html')
 
 
 class Server(object):
