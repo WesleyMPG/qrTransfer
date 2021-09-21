@@ -1,69 +1,73 @@
-import os
-os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
-import pygame as pg
-from utils import resource_path
-
-W, H = 400, 450
-
-
-def _pillImg_to_surface(img):
-    """Converts the qrcode image to a pygame.Surface
-    """
-    mode = img.mode
-    size = img.size
-    data = img.tobytes()
-    return pg.image.fromstring(data, size, mode)
+from kivy.app import App
+from kivy.lang import Builder
+from kivy.uix.widget import Widget
+from kivy.core.window import Window
+from kivy.core.image import Image as CoreImage
+from kivy.uix.image import Image as kImage
+from PIL import Image
+from io import BytesIO
+from utils import get_program_dir
 
 
-def display_line(text):
-    """Displays the "don't close" message.
-    """
-    font_path = resource_path(
-        os.path.join('resources', 'NotoSans-Regular.ttf'))
-    font = pg.font.Font(font_path, 25)
-    t = font.render(text, True, (255,255,255))
-    rect = t.get_rect()
-    return t, rect
+Window.size = (400, 500)
 
-def display_text(text):
-    out = []
-    for i in range(1, len(text)+1):
-        t, rect = display_line(text[i-1])
-        rect.center = (W//2, i*20)
-        out.append((t, rect))
-    return out
+kv = Builder.load_string("""
+#:kivy 1.11.0
+
+<QrFrame>
+    BoxLayout:
+        orientation: 'vertical'
+        size: root.width, root.height
+        Label:
+            id: txt
+            text: "DON"
+            font_size: 22
+            size_hint: (1, .2)
+            canvas.before:
+                Color:
+                    rgba: 1, .4, .4, 1
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
+        Image:
+            id: img
+            size_hint: (1, .8)
+
+""")
 
 
-def display_code(img):
-    """Displays the code image.
-    """
-    surface = _pillImg_to_surface(img)
-    rect = surface.get_rect()
-    rect.center = (W//2, 250)
-    return surface, rect
+def pillImg_to_texture(img):
+    img = img.resize((400, 400))
+    data = BytesIO()
+    img.save(data, format='png')
+    data.seek(0)
+    kimg_data = BytesIO(data.read())
+    return CoreImage(kimg_data, ext='png').texture
 
 
-def window(img, at_close=None):
-    """Sets up the window.
-    """
-    pg.init()
-    screen = pg.display.set_mode((W, H))
-    pg.display.set_caption('qrTransfer')
-#    logo = pg.image.load('logo.png')
-#    pg.display.set_icon(logo)
+class QrFrame(Widget):
+    def __init__(self, code, **kwargs):
+        super(QrFrame, self).__init__(**kwargs)
+        self.ids.txt.text = "DON'T close this window\n"+ \
+                            "until download complete"
+        self.ids.img.texture = pillImg_to_texture(code)
 
-    text = display_text(["DON'T close this window",
-                         " until download complete"])
-    code = display_code(img)
 
-    running = True
-    while running:
-        for event in pg.event.get():
-            if event.type == pg.QUIT:
-                running = False
-                if at_close: at_close()
-        for t in text:
-            screen.blit(*t)
-        screen.blit(*code)
-        pg.display.update()
+class QrApp(App):
+    def __init__(self, code, **kwargs):
+        super(QrApp, self).__init__(**kwargs)
+        self._code = code
 
+    def build(self):
+        Window.clearcolor = (.1, .1, .1, 1)
+        return QrFrame(self._code)
+
+
+def window(code, at_close=None):
+    QrApp(code).run()
+    if at_close: at_close()
+
+
+if __name__ == '__main__':
+    img = Image.open('./resources/logo.png')
+    QrApp(img).run()

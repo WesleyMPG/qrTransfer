@@ -12,7 +12,13 @@ PORT = config['network']['PORT']
 def qr_gen(text):
     """Creates the qrcode image
     """
-    return qr.make(text).convert('RGB')
+    code = qr.QRCode(
+        box_size=10,
+        border=2
+    )
+    code.add_data(text)
+    code.make(fit=True)
+    return code.make_image()
 
 
 def start_server():
