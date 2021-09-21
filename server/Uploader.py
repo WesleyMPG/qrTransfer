@@ -4,6 +4,10 @@ from shutil import copy2
 from utils import get_local_network_ip, config
 
 
+STATIC_FOLDER = config['directories']['STATIC_FOLDER']
+PORT = config['network']['PORT']
+
+
 class Uploader(object):
     LOCAL_MODE = 0
     REMOTE_MODE = 1
@@ -44,7 +48,7 @@ class Uploader(object):
         return r.json()['link']
 
     def __copy_file(self, path : pathlib.Path):
-        destination = config['STATIC_FOLDER']
+        destination = STATIC_FOLDER
         copy2(path, destination)
 
         self.__path = pathlib.PurePath(destination, path.name)

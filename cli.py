@@ -28,6 +28,12 @@ parser.add_argument('-mtp',
                     from another device'
 )
 
+parser.add_argument('--remote',
+                    action='store_true',
+                    help='- Enable transfer through the remote \
+                    service file.io'
+)
+
 args = parser.parse_args()
 
 if not args.mobile_to_pc:

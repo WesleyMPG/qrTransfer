@@ -3,7 +3,10 @@ from time import sleep
 from cli import args
 from server import Server, Uploader
 from display import window
-from utils import get_local_network_ip
+from utils import get_local_network_ip, config
+
+
+PORT = config['network']['PORT']
 
 
 def qr_gen(text):
@@ -22,7 +25,10 @@ def upload_mode():
     """Make a file available to be downloaded
     """
     print('Uploading file...')
-    u = Uploader(mode=Uploader.LOCAL_MODE)
+    if args.remote:
+        u = Uploader(mode=Uploader.REMOTE_MODE)
+    else:
+        u = Uploader(mode=Uploader.LOCAL_MODE)
     link = u.upload(args.path)
     code = qr_gen(link)
     window(code, at_close=u.done)
@@ -30,7 +36,7 @@ def upload_mode():
 
 def download_mode():
     ip = get_local_network_ip()
-    return f'http://{ip}:5000/upload/'
+    return f'http://{ip}:{PORT}/upload/'
 
 
 def main():

@@ -9,8 +9,11 @@ from utils import config
 __all__ = ['Server']
 
 
-app = Flask(__name__, static_folder=config['STATIC_FOLDER'])
-app.config['UPLOAD_FOLDER'] = config['UPLOAD_FOLDER']
+STATIC_FOLDER = config['directories']['STATIC_FOLDER']
+UPLOAD_FOLDER = config['directories']['UPLOAD_FOLDER']
+PORT = config['network']['PORT']
+
+app = Flask(__name__, static_folder=STATIC_FOLDER)
 app.secret_key = os.urandom(16).hex()
 
 
@@ -21,7 +24,7 @@ def hello_world():
 
 @app.route('/download/<path:path>')
 def download(path):
-    return send_file(f'{config["STATIC_FOLDER"]}/{path}')
+    return send_file(f'{STATIC_FOLDER}/{path}')
 
 
 @app.route('/sdwn/')
@@ -46,11 +49,11 @@ def upload():
             return redirect(request.url)
         if file:
             filename = secure_filename(file.filename)
-            folder = app.config['UPLOAD_FOLDER']
+            folder = UPLOAD_FOLDER
             save_path = os.path.join(folder, filename)
             file.save(save_path)
-            return 'Done'
-    return render_template('upload.html')
+            return render_template('upload.html', mode='done')
+    return render_template('upload.html', mode='pick')
 
 
 class Server(object):
@@ -61,7 +64,8 @@ class Server(object):
         server = Thread(
             target=lambda:app.run(debug=False,
                                   use_reloader=False,
-                                  host='0.0.0.0'),
+                                  host='0.0.0.0',
+                                  port=int(PORT)),
             daemon=True
         )
         server.start()
@@ -69,7 +73,7 @@ class Server(object):
     @staticmethod
     def is_up():
         try:
-            r = req.get('http://localhost:5000/status-check/')
+            r = req.get(f'http://localhost:{PORT}/status-check/')
             return True
         except req.exceptions.ConnectionError:
             return False

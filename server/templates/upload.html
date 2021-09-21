@@ -7,8 +7,9 @@
     </head>
     <body>
         <h1>qrTransfer</h1>
-        <form method=post enctype=multipart/form-data>
-            <div class="container">
+        <div class="container">
+            {% if mode == 'pick' %}
+            <form method=post enctype=multipart/form-data>
                     <input type="file" name="file"
                         id="file" value="select file">
                     <label for="file" id="select" class="btn">
@@ -18,8 +19,11 @@
                     </label>
                 <input type="submit" name="submit" class="btn"
                     id="submit" value="upload file">
-            </div>
-        </form>
+            </form>
+            {% else %}
+            <span class="done">Success</span>
+            {% endif %}
+        </div>
     </body>
     <style type="text/css" media="screen">
         body{
@@ -34,12 +38,20 @@
 
         .container {
             display: flex;
+            justify-content: center;
+            height: 12vh;
+            align-items: center;
             margin: 10px auto;
+            border: 1px solid rgb(70, 70, 70);
+            border-radius: 5px;
+        }
+
+        form {
+            display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            border: 1px solid rgb(70, 70, 70);
-            border-radius: 5px;
+            width: 100%;
         }
 
         #file {
@@ -72,7 +84,7 @@
             color: lightgray;
             border: 1px solid black;
             border-radius: 7px;
-            margin: 5px;
+            margin: 7px;
         }
 
         .btn:hover {
@@ -85,6 +97,18 @@
             color: black;
             background-color: rgb(97, 97, 97);
             border-color: rgb(41, 41, 41);
+        }
+
+        .done {
+            width: 50%;
+            height: 40px;
+            line-height: 40px;
+            vertical-align: middle;
+            text-align: center;
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 18px;
+            color: lightgray;
+            margin: 7px;
         }
 
     </style>

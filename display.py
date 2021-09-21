@@ -1,6 +1,7 @@
 import os
 os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
 import pygame as pg
+from utils import resource_path
 
 W, H = 400, 450
 
@@ -17,8 +18,9 @@ def _pillImg_to_surface(img):
 def display_line(text):
     """Displays the "don't close" message.
     """
-    font_name = pg.font.get_default_font()
-    font = pg.font.Font(font_name, 25)
+    font_path = resource_path(
+        os.path.join('resources', 'NotoSans-Regular.ttf'))
+    font = pg.font.Font(font_path, 25)
     t = font.render(text, True, (255,255,255))
     rect = t.get_rect()
     return t, rect
@@ -30,6 +32,7 @@ def display_text(text):
         rect.center = (W//2, i*20)
         out.append((t, rect))
     return out
+
 
 def display_code(img):
     """Displays the code image.
