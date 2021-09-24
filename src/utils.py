@@ -1,4 +1,4 @@
-import subprocess
+from socket import gethostname, gethostbyname
 import configparser
 import os, sys, re
 
@@ -11,8 +11,8 @@ def get_program_dir():
         folder = os.path.dirname(sys.executable)
         return os.path.abspath(folder)
     else:
-        file = os.path.abspath(__file__)
-        return os.path.dirname(file)
+        folder = os.path.abspath(__file__)
+        return os.path.dirname(folder)
 
 
 def config_setup():
@@ -37,7 +37,7 @@ def __get_ip_on_windows():
         ['cmd.exe', '/c', 'ipconfig | findstr IPv4'],
         stdout=subprocess.PIPE)
     ip = sub.stdout.decode('latin1')
-    ip = re.search(r'\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}')
+    ip = re.search(r'\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}', ip)
     return ip
 
 
@@ -50,10 +50,13 @@ def __get_ip_on_unix():
 
 
 def get_local_network_ip():
-    if os.name == 'nt':
-        return __get_ip_on_windows()
-    else:
-        return __get_ip_on_unix()
+    #if os.name == 'nt':
+     #   return __get_ip_on_windows()
+    #else:
+    #    return __get_ip_on_unix()
+    hostname = gethostname()
+    return gethostbyname(hostname)
+    
 
 
 def assert_folders():
