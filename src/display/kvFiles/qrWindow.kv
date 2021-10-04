@@ -1,0 +1,21 @@
+#:kivy 1.11.0
+
+<QrFrame>
+    BoxLayout:
+        orientation: 'vertical'
+        size: root.width, root.height
+        Label:
+            id: txt
+            text: "DON"
+            font_size: 22
+            size_hint: (1, .2)
+            canvas.before:
+                Color:
+                    rgba: 1, .4, .4, 1
+                Rectangle:
+                    pos: self.pos
+                    size: self.size
+        Image:
+            id: img
+            size_hint: (1, .8)
+
