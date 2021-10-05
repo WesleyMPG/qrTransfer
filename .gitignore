@@ -1,9 +1,5 @@
 *__pycache__
 *.spec
-<<<<<<< HEAD
 *build
-=======
-build
->>>>>>> 2ce530e (Add build scripts)
 workspace.code-workspace
 

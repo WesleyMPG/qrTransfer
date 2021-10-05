@@ -6,6 +6,7 @@ folders=(
 
 files=(
     "/usr/local/bin/qrTransfer"
+    "/usr/share/applications/qrTransfer-MTP.desktop"
     "$HOME/.local/share/nautilus/scripts/qrTransfer"
     "$HOME/.local/share/kservices5/qrTransfer-service.desktop"
 )

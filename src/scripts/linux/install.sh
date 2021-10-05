@@ -4,7 +4,6 @@ script_dir=$(dirname "$0")
 cd $script_dir
 
 folder="$HOME/.local/share/qrTransfer"
-conf_path="$folder/config.ini"
 
 gme_scripts="scripts/gnome"
 kde_scripts="scripts/kde"
@@ -28,6 +27,7 @@ license_agreement() {
 
 
 write_conf() {
+    conf_path="$folder/config.ini"
     if [[ -f $conf_path ]]; then
         return
     fi
@@ -40,6 +40,26 @@ write_conf() {
     printf "\n"                                &&
     printf "[lang]\n"                          &&
     printf "LANGUAGE = en\n")                  > "$conf_path"
+}
+
+
+write_mtp_shortcut() {
+    path="/usr/share/applications/qrTransfer-MTP.desktop"
+    if [[ -f $path ]]; then
+        return
+    fi
+    (printf "[Desktop Entry]\n" &&
+    printf "Name=Receive from qrTransfer\n" &&
+    printf "Name[pt]=Receber pelo qrTransfer\n" &&
+    printf "Comment=A way to transfer files from your phone\n" &&
+    printf "Comment[pt_BR]=Um jeito de receber arquivos do celular\n" &&
+    printf "Type=Application\n" &&
+    printf "Exec=qrTransfer -mtp\n" &&
+    printf "Categories=Utility\n" &&
+    printf "GenericName=FileTransfer\n" &&
+    printf "Icon=$folder/icon.png") > ./mtp.temp
+    sudo cp ./mtp.temp $path
+    rm mtp.temp
 }
 
 
@@ -92,13 +112,21 @@ ask_manager() {
 
 copy() {
     license_agreement
-    cp ./qrTransfer uninstall.sh LICENSE "$folder/"
+    cp  qrTransfer \
+        uninstall.sh \
+        LICENSE \
+        icon.png "$folder/"
 
     write_conf
+    write_mtp_shortcut
     sudo ln -s "$folder/qrTransfer" "/usr/local/bin/qrTransfer"
 
     if [[ $? ]]; then
         ask_manager
+    fi
+    
+    if [[ $? ]]; then
+        echo "Installed successfully"
     fi
 }
 

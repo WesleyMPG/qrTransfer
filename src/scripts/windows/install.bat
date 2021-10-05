@@ -44,7 +44,10 @@ echo LANGUAGE = en) > %folder%\config.ini
 ::Install
 copy qrTransfer.exe %folder%
 copy icon.ico %folder%
+copy scripts\qrTransfer.lnk %folder%
+copy scripts\qrTransfer-MTP.lnk %folder%
 copy scripts\qrTransfer.lnk "C:\Users\%USERNAME%\AppData\Roaming\Microsoft\Windows\SendTo"
+copy scripts\qrTransfer-MTP.lnk "C:\Users\%USERNAME%\Desktop"
 
 echo Installed sucessfully.
 pause

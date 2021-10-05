@@ -1,4 +1,0 @@
-[Desktop Entry]
-Name=Send To qrTransfer
-Name[pt]=Enviar Para qrTransfer
-Exec=qrTransfer -mtp;
