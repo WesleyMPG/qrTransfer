@@ -2,7 +2,6 @@ import qrcode as qr
 from time import sleep
 from cli import args
 from server import Server, Uploader
-from display import window
 from utils import get_local_network_ip, config
 
 
@@ -30,6 +29,7 @@ def start_server():
 def upload_mode():
     """Make a file available to be downloaded
     """
+    from display import qr_window
     print('Uploading file...')
     if args.remote:
         u = Uploader(mode=Uploader.REMOTE_MODE)
@@ -37,23 +37,23 @@ def upload_mode():
         u = Uploader(mode=Uploader.LOCAL_MODE)
     link = u.upload(args.path)
     code = qr_gen(link)
-    window(code, at_close=u.done)
+    qr_window(code, at_close=u.done)
 
 
 def download_mode():
+    from display import qr_window
     ip = get_local_network_ip()
-    return f'http://{ip}:{PORT}/upload/'
+    link = f'http://{ip}:{PORT}/upload/'
+    code = qr_gen(link)
+    qr_window(code)
 
 
 def main():
     start_server()
-
     if args.pc_to_mobile:
         upload_mode()
     else:
-        link = download_mode()
-        code = qr_gen(link)
-        window(code)
+        download_mode()
 
 
 if __name__ == "__main__":

@@ -2,7 +2,8 @@ import subprocess
 import configparser
 import os, sys, re
 
-__all__ = ['get_local_network_ip', 'resource_path','config']
+__all__ = ['get_local_network_ip', 'resource_path','config'
+            'ROOT_DIR']
 
 
 def get_program_dir():
@@ -67,3 +68,6 @@ def assert_folders():
 
 
 assert_folders()
+
+ROOT_DIR = os.path.dirname(
+    os.path.abspath(__file__))
