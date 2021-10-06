@@ -2,6 +2,7 @@ import qrcode as qr
 from time import sleep
 from cli import args
 from server import Server, Uploader
+from display import qr_window
 from utils import get_local_network_ip, config
 
 

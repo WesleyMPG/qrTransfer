@@ -1,0 +1,11 @@
+[Desktop Entry]
+Type=Service
+X-KDE-ServiceTypes=KonqPopupMenu/Plugin
+X-KDE-Submenu=qrTransfer
+MimeType=application/octet-stream;
+Actions=sendTo;receiveOn;
+
+[Desktop Action sendTo]
+Name=Send To qrTransfer
+Name[pt]=Enviar Para qrTransfer
+Exec=qrTransfer -p %u;
