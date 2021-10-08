@@ -10,7 +10,10 @@ PORT = config['network']['PORT']
 
 
 def qr_gen(text):
-    """Creates the qrcode image
+    """Creates the qrcode image.
+
+    Returns:
+        PIL.Image.
     """
     code = qr.QRCode(
         box_size=10,
@@ -22,13 +25,18 @@ def qr_gen(text):
 
 
 def start_server():
+    """Start and wait for server to be up.
+    """
     Server.run()
     while not Server.is_up():
         sleep(1)
 
 
 def upload_mode():
-    """Make a file available to be downloaded
+    """Transfer from pc to mobile.
+
+    "Uploads" a file to qrTransfer so it can be downloaded
+    using the qrCode.
     """
     from display import qr_window
     print('Uploading file...')
@@ -42,6 +50,10 @@ def upload_mode():
 
 
 def download_mode():
+    """Transfer from mobile to pc 
+
+    "Downloads" a file from qrTransfer
+    """
     from display import qr_window
     ip = get_local_network_ip()
     link = f'http://{ip}:{PORT}/upload/'

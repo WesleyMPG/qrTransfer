@@ -9,6 +9,15 @@ PORT = config['network']['PORT']
 
 
 class Uploader(object):
+    """A manager to upload modes.
+
+    Args:
+        mode (int, optional): Defaults to Uploader.LOCAL_MODE.
+            Can also be Uploader.REMOTE_MODE.
+    
+    Raises:
+        ValueError: If mode is unknown.
+    """
     LOCAL_MODE = 0
     REMOTE_MODE = 1
 
@@ -20,14 +29,16 @@ class Uploader(object):
         elif mode == Uploader.REMOTE_MODE:
             self._upload = self.__remote_upload
         else:
-            raise Exception('Invalid mode.')
+            raise Exception('Invalid mode.')  #TODO: change to ValueError
 
     def upload(self, path):
-        """Upload a file
+        """Upload a file.
         """
         return self._upload(path)
 
     def done(self):
+        """Has things to be done after upload complete.
+        """
         if self.__mode == Uploader.LOCAL_MODE:
             os.remove(self.__path)
 

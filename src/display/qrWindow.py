@@ -17,6 +17,8 @@ kv_file = path_join(DISPLAY_DIR, 'kvFiles', 'qrWindow.kv')
 Builder.load_file(kv_file)
 
 def pillImg_to_texture(img):
+    """Converts a PIL.Image into a kivy texture
+    """
     img = img.resize((400, 400))
     data = BytesIO()
     img.save(data, format='png')
@@ -25,11 +27,14 @@ def pillImg_to_texture(img):
     return CoreImage(kimg_data, ext='png').texture
 
 class QrFrame(Widget):
+    """Container for the qrCode image
+    """
     def __init__(self, code, **kwargs):
         super(QrFrame, self).__init__(**kwargs)
         self.ids.txt.text = "DON'T close this window\n"+ \
                             "until download complete"
         self.ids.img.texture = pillImg_to_texture(code)
+
 
 class QrApp(App):
     def __init__(self, code, **kwargs):
@@ -43,6 +48,13 @@ class QrApp(App):
 
 
 def qr_window(code, at_close=None):
+    """Displays the qrCode window
+
+    Args:
+        code (PILL.Image): the qrCode to be displayed
+        at_close (function, optional): A function to be executed
+            after window close. Defaults to None.
+    """
     QrApp(code).run()
     if at_close: at_close()
 

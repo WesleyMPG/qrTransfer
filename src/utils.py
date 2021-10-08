@@ -2,11 +2,19 @@ from socket import gethostname, gethostbyname
 import configparser
 import os, sys, re
 
-__all__ = ['get_local_network_ip', 'resource_path','config'
+__all__ = ['get_local_network_ip', 'resource_path', 'config',
             'ROOT_DIR']
 
 
 def get_program_dir():
+    """Get program dir path.
+
+    Detects if what is running is the executable or not and return
+    it's real path.
+
+    Returns:
+        str: dir path.
+    """
     if getattr(sys, 'frozen', False):
         folder = os.path.dirname(sys.executable)
         return os.path.abspath(folder)
@@ -16,6 +24,11 @@ def get_program_dir():
 
 
 def config_setup():
+    """Read settings in config.ini.
+
+    Returns:
+        dict of {str: dict of {str: str}}: all settings.
+    """
     config = configparser.ConfigParser()
     this_dir = get_program_dir()
     config.read(os.path.join(this_dir, 'config.ini'))
@@ -32,7 +45,7 @@ def resource_path(relative):
     return os.path.join(base, relative)
 
 
-def __get_ip_on_windows():
+def __get_ip_on_windows():  #TODO: remove
     sub = subprocess.run(
         ['cmd.exe', '/c', 'ipconfig | findstr IPv4'],
         stdout=subprocess.PIPE)
@@ -41,7 +54,7 @@ def __get_ip_on_windows():
     return ip
 
 
-def __get_ip_on_unix():
+def __get_ip_on_unix():  #TODO: remove
     sub = subprocess.Popen(
         "hostname -I | awk '{print $1}'",
         shell=True, stdout=subprocess.PIPE)
@@ -50,16 +63,17 @@ def __get_ip_on_unix():
 
 
 def get_local_network_ip():
-    #if os.name == 'nt':
-     #   return __get_ip_on_windows()
-    #else:
-    #    return __get_ip_on_unix()
+    """Returns your computer local ip.
+
+    Returns:
+        str
+    """
     hostname = gethostname()
     return gethostbyname(hostname)
     
 
 
-def assert_folders():
+def assert_folders():  #TODO: create a exception here
     dirs = config['directories']
     for k in dirs.keys():
         dirs[k] = os.path.abspath(dirs[k])
@@ -72,5 +86,6 @@ def assert_folders():
 
 assert_folders()
 
+#: Path to src directory
 ROOT_DIR = os.path.dirname(
     os.path.abspath(__file__))

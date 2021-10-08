@@ -24,11 +24,19 @@ def hello_world():
 
 @app.route('/download/<path:path>')
 def download(path):
+    """File download function
+
+    Args:
+        path (str): Path to the file. Usually just its name. 
+
+    Returns:
+        The file.
+    """
     return send_file(f'{STATIC_FOLDER}/{path}')
 
 
 @app.route('/sdwn/')
-def shutdown():
+def shutdown():  #TODO: remove
     shut = request.environ.get("werkzeug.server.shutdown")
 
     if shut is None:
@@ -40,6 +48,11 @@ def shutdown():
 
 @app.route('/upload/', methods=['GET', 'POST'])
 def upload():
+    """Upload function
+
+    Returns:
+        Upload page.
+    """
     if request.method == 'POST':
         if 'file' not in request.files:
             return redirect(request.url)
@@ -72,6 +85,11 @@ class Server(object):
 
     @staticmethod
     def is_up():
+        """It's a way to check if server is up
+
+        Returns:
+            bool: True if working.
+        """
         try:
             r = req.get(f'http://localhost:{PORT}/status-check/')
             return True
