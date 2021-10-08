@@ -9,6 +9,6 @@ then
     notify-send "No file privided"
 else
     notify-send "Uploading file ${paths[0]}"
-    ~/.local/bin/qrTransfer -p "${paths[0]}"
+    "/usr/local/bin/qrTransfer" -p "${paths[0]}"
 fi
 

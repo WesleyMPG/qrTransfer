@@ -27,6 +27,8 @@ This depends most on your local network. If you're in a network that you trust (
 
 First of all, there is a lot of room for improvements here and I plan to create a graphical installer in a time to come, but for now please continue with these simple versions.
 
+Download qrTransfer [here](https://github.com/WesleyMPG/qrTransfer/releases).
+
 ###  Windows
 
 - Download the corresponding release;
