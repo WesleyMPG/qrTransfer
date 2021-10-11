@@ -7,6 +7,7 @@ folder="$HOME/.local/share/qrTransfer"
 
 gme_scripts="scripts/gnome"
 kde_scripts="scripts/kde"
+xfce_scripts="scripts/xfce"
 
 trap "exit 0" SIGINT
 
@@ -81,11 +82,34 @@ gnome_context_menu() {
 }
 
 
+xfce_context_menu() {
+    sendTo_path="/usr/share/Thunar/sendto"
+    filename="thunar-sendto-qrTransfer.desktop"
+
+    asw=""
+    (echo "
+    At Thunar qrTransfer will be placed under 'send to' submenu. 
+    However this menu doesn't appear on desktop. To use qrTransfer 
+    also on desktop files a shortcut can be added so you'll be able
+    to open the files through 'open with other application...'.
+    ")
+    read -p "Add this extra shortcut? [y/N]: " -n1 asw
+
+    sudo cp "$xfce_scripts/$filename" "$sendTo_path/"
+    sudo sh -c "echo Icon=$folder/icon.png >> $sendTo_path/$filename"
+    if [[ $asw == 'y' ]]; then
+        sudo cp "$sendTo_path/$filename" \
+        "/usr/share/applications/qrTransfer.desktop"
+    fi
+}
+
+
 ask_manager() {
     asw=""
         (echo -e "Please, enter your current file manager:\n\
             \n\tNautilus (GNOME) - [1]\
             \n\tDolphin  (KDE)   - [2]\
+            \n\tThunar   (XFCE)  - [3]\
             \n\tOther            - [0]\n")
     while [[ -z $asw ]]; do
         read -p "  :: " asw
@@ -94,6 +118,9 @@ ask_manager() {
             break
         elif [[ $asw == '2' ]]; then
             kde_context_menu
+            break
+        elif [[ $asw == '3' ]]; then
+            xfce_context_menu
             break
         elif [[ $asw == '0' ]]; then
             echo -e "\tYour file manager still has no qrTransfer\
@@ -116,6 +143,7 @@ copy() {
         uninstall.sh \
         LICENSE \
         icon.png "$folder/"
+    # put an "if succeed" on copy
 
     write_conf
     write_mtp_shortcut
@@ -124,9 +152,9 @@ copy() {
     if [[ $? ]]; then
         ask_manager
     fi
-    
+
     if [[ $? ]]; then
-        echo "Installed successfully"
+        echo -e "\nInstalled successfully"
     fi
 }
 

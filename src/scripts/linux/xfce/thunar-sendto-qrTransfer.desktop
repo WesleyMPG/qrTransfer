@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=Send To qrTransfer
+Name[pt]=Enviar Para qrTransfer
+Comment=A way to transfer files to your phone
+Comment[pt_BR]=Um jeito de enviar arquivos para o celular
+Type=Application
+Exec=qrTransfer -p %u
+Categories=Utility
+GenericName=FileTransfer

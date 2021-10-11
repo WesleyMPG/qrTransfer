@@ -2,4 +2,5 @@
 *.spec
 *build
 workspace.code-workspace
+.vscode
 
