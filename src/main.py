@@ -1,10 +1,17 @@
 import qrcode as qr
+import logging
 from time import sleep
 from cli import args
 from server import Server, Uploader
-from display import qr_window
+from display import qr_window  #TODO: remove
 from utils import get_local_network_ip, config
 
+
+logging.basicConfig(
+    level=logging.WARNING,
+    format='[%(levelname)-8s]:%(name)s::%(message)s'
+)
+log = logging.getLogger(__name__)
 
 PORT = config['network']['PORT']
 

@@ -1,9 +1,11 @@
 from socket import gethostname, gethostbyname
-import configparser
+import configparser, logging
 import os, sys, re
 
 __all__ = ['get_local_network_ip', 'resource_path', 'config',
             'ROOT_DIR']
+
+log = logging.getLogger(__name__)
 
 
 def get_program_dir():
@@ -21,20 +23,6 @@ def get_program_dir():
     else:
         folder = os.path.abspath(__file__)
         return os.path.dirname(folder)
-
-
-def config_setup():
-    """Read settings in config.ini.
-
-    Returns:
-        dict of {str: dict of {str: str}}: all settings.
-    """
-    config = configparser.ConfigParser()
-    this_dir = get_program_dir()
-    config.read(os.path.join(this_dir, 'config.ini'))
-    return config
-
-config = config_setup()
 
 
 def resource_path(relative):
@@ -72,19 +60,74 @@ def get_local_network_ip():
     return gethostbyname(hostname)
     
 
+class ConfigHandler(object):
+    def __init__(self, file_path):
+        self._config = None
+        self._load_file(file_path)
+    
+    @property
+    def config(self):
+        """A dict containing all settings.
 
-def assert_folders():  #TODO: create a exception here
-    dirs = config['directories']
-    for k in dirs.keys():
-        dirs[k] = os.path.abspath(dirs[k])
-    if not os.path.isdir(dirs['STATIC_FOLDER']):
-        os.mkdir(dirs['STATIC_FOLDER'])
-    if not os.path.isdir(dirs['UPLOAD_FOLDER']):
-        print(f'{dirs["UPLOAD_FOLDER"]} is not a directorie.')
-        sys.exit(1)
+        Returns:
+            dict of {str: dict of {str: str}}: all settings.
+        """
+        return self._config
 
+    def __assert_structure(self):
+        structure = {
+            'directories': ['STATIC_FOLDER', 'UPLOAD_FOLDER'],
+            'network': ['PORT'],
+        }
+        for s in structure.keys():
+            if s not in self._config.sections():
+                log.error(f'"{s}" section missing at config file.')
+                sys.exit(1)
+            for i in structure[s]:
+                if i not in self._config[s]:
+                    log.error(f'"{i}" missing at "{s}" config.')
+                    sys.exit(1)
 
-assert_folders()
+    def __assert_folders(self): 
+        dirs = self._config['directories']
+        for k in dirs.keys():
+            dirs[k] = os.path.abspath(dirs[k])
+
+        log.debug(f'ConfigHandler - folders - Static folder: {dirs["STATIC_FOLDER"]}.')
+        if not os.path.isdir(dirs['STATIC_FOLDER']): 
+            log.warning(f"Static folder doesn't exists. Creating it...")
+            static = dirs['STATIC_FOLDER']
+            os.mkdir(static)
+
+        log.debug(f'ConfigHandler - folders - Upload folder: {dirs["UPLOAD_FOLDER"]}.')
+        if not os.path.isdir(dirs['UPLOAD_FOLDER']):
+            log.error(f'Upload folder doesn\'t exists.')
+            sys.exit(1)
+
+    def __assert_network(self):
+        ntw = self._config['network']
+        log.debug(f'ConfigHandler - network - Port: {ntw["PORT"]}')
+        if not ntw['PORT'].isdecimal():
+            log.warning('Invalid port value. Setting default...')
+            ntw['PORT'] = '5000'
+
+    def __assert_config(self):
+        self.__assert_structure()
+        self.__assert_folders()
+        self.__assert_network()
+        
+    def _load_file(self, file_path):
+        """Read settings in file_path
+        """
+        log.info("ConfigHandler - Loading config file.")
+        config = configparser.ConfigParser()
+        config.read(file_path)
+        self._config = config
+        self.__assert_config()
+
+            
+config = ConfigHandler(
+    os.path.join(get_program_dir(), 'config.ini'))
 
 #: Path to src directory
 ROOT_DIR = os.path.dirname(
