@@ -32,7 +32,10 @@ def download(path):
     Returns:
         The file.
     """
-    return send_file(f'{STATIC_FOLDER}/{path}')
+    return send_file(f'{STATIC_FOLDER}/{path}',
+                     attachment_filename=f'{path}',
+                     as_attachment=True,
+    )
 
 
 @app.route('/sdwn/')

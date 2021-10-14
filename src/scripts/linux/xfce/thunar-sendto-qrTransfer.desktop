@@ -4,6 +4,6 @@ Name[pt]=Enviar Para qrTransfer
 Comment=A way to transfer files to your phone
 Comment[pt_BR]=Um jeito de enviar arquivos para o celular
 Type=Application
-Exec=qrTransfer -p %u
+Exec=qrTransfer -p %U
 Categories=Utility
 GenericName=FileTransfer
