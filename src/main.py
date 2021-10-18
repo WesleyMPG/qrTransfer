@@ -40,11 +40,12 @@ def upload_mode():
     """
     from display import qr_window
     print('Uploading file...')
+
     if args.remote:
         u = Uploader(mode=Uploader.REMOTE_MODE)
     else:
         u = Uploader(mode=Uploader.LOCAL_MODE)
-    link = u.upload(args.path)
+    link = u.upload(args.path_list)
     code = qr_gen(link)
     qr_window(code, at_close=u.done)
 

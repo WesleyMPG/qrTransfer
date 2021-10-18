@@ -32,7 +32,10 @@ def download(path):
     Returns:
         The file.
     """
-    return send_file(f'{STATIC_FOLDER}/{path}')
+    return send_file(f'{STATIC_FOLDER}/{path}',
+                     attachment_filename=f'{path}',
+                     as_attachment=True,
+    )
 
 
 @app.route('/sdwn/')
@@ -56,15 +59,16 @@ def upload():
     if request.method == 'POST':
         if 'file' not in request.files:
             return redirect(request.url)
-        file = request.files['file']
-        if file.filename == '':
-            flash('No selected file')
+        files = request.files.getlist('file')
+        if files[0].filename == '':
+            #flash('No selected file.')
             return redirect(request.url)
-        if file:
-            filename = secure_filename(file.filename)
-            folder = UPLOAD_FOLDER
-            save_path = os.path.join(folder, filename)
-            file.save(save_path)
+        if files:
+            for file in files:
+                filename = secure_filename(file.filename)
+                folder = UPLOAD_FOLDER
+                save_path = os.path.join(folder, filename)
+                file.save(save_path)
             return render_template('upload.html', mode='done')
     return render_template('upload.html', mode='pick')
 

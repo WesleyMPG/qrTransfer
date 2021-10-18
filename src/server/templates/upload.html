@@ -10,7 +10,7 @@
         <div class="container">
             {% if mode == 'pick' %}
             <form method=post enctype=multipart/form-data>
-                    <input type="file" name="file"
+                    <input type="file" name="file" multiple
                         id="file" value="select file">
                     <label for="file" id="select" class="btn">
                        <p id='fileName'>
@@ -115,7 +115,12 @@
 
     <script>
         function update(e) {
-            fileName.textContent = file.files[0].name;
+            let size = file.files.length;
+            if (size == 1) {
+                fileName.textContent = file.files[0].name;
+            } else {
+                fileName.textContent = `${size} files selected`;
+            }
         }
 
         const file = document.querySelector('#file');
