@@ -1,10 +1,8 @@
 import qrcode as qr
 from time import sleep
-from cli import args
 from server import Server, Uploader
-from display import qr_window
-from utils import get_local_network_ip, config
-
+from display import qr_window  #TODO: remove
+from utils import get_local_network_ip, config, args, logger
 
 PORT = config['network']['PORT']
 
@@ -39,8 +37,6 @@ def upload_mode():
     using the qrCode.
     """
     from display import qr_window
-    print('Uploading file...')
-
     if args.remote:
         u = Uploader(mode=Uploader.REMOTE_MODE)
     else:
@@ -50,7 +46,7 @@ def upload_mode():
     qr_window(code, at_close=u.done)
 
 
-def download_mode():
+def download_mode():  #TODO: find less confusing names
     """Transfer from mobile to pc 
 
     "Downloads" a file from qrTransfer
@@ -71,5 +67,8 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except Exception as e:
+        logger.exception('An unexpected behavior ocurred.')
 
