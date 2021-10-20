@@ -1,6 +1,8 @@
 import argparse
 import os, sys
 
+__all__ = ['args']
+
 
 parser = argparse.ArgumentParser(
     description='Provides a QRcode to download or upload a file. \
@@ -18,21 +20,27 @@ parser.add_argument('-p',
 parser.add_argument('-ptm',
                     '--pc-to-mobile',
                     action='store_false',
-                    help='- [DEFAULT] Start the program to upload \
+                    help='- [DEFAULT] Starts the program to upload \
                     a file to other device')
 
 parser.add_argument('-mtp',
                     '--mobile-to-pc',
                     action='store_true',
-                    help='- Start the program to download a file \
+                    help='- Starts the program to download a file \
                     from another device'
 )
 
 parser.add_argument('--remote',
                     action='store_true',
-                    help='- Enable transfer through the remote \
+                    help='- Enables transfer through the remote \
                     service file.io'
 )
+
+parser.add_argument('--debug',
+                    action='store_true',
+                    help='- Enables debug mode.'
+)
+
 
 args = parser.parse_args()
 

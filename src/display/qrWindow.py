@@ -1,3 +1,5 @@
+import os
+os.environ['KIVY_NO_ARGS'] = '1'
 from kivy.app import App
 from kivy.lang import Builder
 from kivy.uix.widget import Widget

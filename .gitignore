@@ -3,4 +3,5 @@
 *build
 workspace.code-workspace
 .vscode
+*logs
 
