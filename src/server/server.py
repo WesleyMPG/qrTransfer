@@ -1,4 +1,4 @@
-import os
+import os, logging
 import requests as req
 from threading import Thread
 from werkzeug.utils import secure_filename
@@ -8,6 +8,7 @@ from utils import config
 
 __all__ = ['Server']
 
+log = logging.getLogger(f'Main.{__name__}')
 
 STATIC_FOLDER = config['directories']['STATIC_FOLDER']
 UPLOAD_FOLDER = config['directories']['UPLOAD_FOLDER']
@@ -32,13 +33,14 @@ def download(path):
     Returns:
         The file.
     """
+    log.debug(f'download - File: {path}.')
     return send_file(f'{STATIC_FOLDER}/{path}',
                      attachment_filename=f'{path}',
                      as_attachment=True,
     )
 
 
-@app.route('/sdwn/')
+@app.route('/sdwn/')  
 def shutdown():  #TODO: remove
     shut = request.environ.get("werkzeug.server.shutdown")
 
@@ -62,6 +64,7 @@ def upload():
         files = request.files.getlist('file')
         if files[0].filename == '':
             #flash('No selected file.')
+            log.error('upload - No selected file.')
             return redirect(request.url)
         if files:
             for file in files:
@@ -69,7 +72,9 @@ def upload():
                 folder = UPLOAD_FOLDER
                 save_path = os.path.join(folder, filename)
                 file.save(save_path)
+                log.info(f'upload - saved at {save_path}.')
             return render_template('upload.html', mode='done')
+
     return render_template('upload.html', mode='pick')
 
 
@@ -78,8 +83,9 @@ class Server(object):
     def run():
         """Creates the server thread
         """
+        log.info('Stating server...')
         server = Thread(
-            target=lambda:app.run(debug=False,
+            target=lambda:app.run(debug=True,
                                   use_reloader=False,
                                   host='0.0.0.0',
                                   port=int(PORT)),
@@ -102,7 +108,7 @@ class Server(object):
 
 
 if __name__ == "__main__":
-    app.run(debug=False,
+    app.run(debug=True,
             use_reloader=True,
             host='0.0.0.0')
 

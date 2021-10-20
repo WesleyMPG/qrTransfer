@@ -1,11 +1,11 @@
 import requests as req
-import pathlib
+import pathlib, logging
 from server import FileHandler
 from utils import get_local_network_ip, config
 
+log = logging.getLogger(f'Main.{__name__}')
 
 PORT = config['network']['PORT']
-
 
 class Uploader(object):
     """A manager to upload modes.
@@ -28,19 +28,28 @@ class Uploader(object):
     def upload(self, path_list):
         """Upload a file.
         """
-        path = self.__fhandler.resolve_files(path_list)
-        if self.__mode == Uploader.LOCAL_MODE:
-            return self.__local_upload(path)
-        elif self.__mode == Uploader.REMOTE_MODE:
-            return self.__remote_upload(path)
-        else:
-            raise Exception('Invalid mode.')  #TODO: change to ValueError
+        log.debug(f'upload - Mode: {self.__mode}')
+
+        link = self.__get_link(path_list) 
+        log.debug(f'upload - Link: {link}')
+        return link
 
     def done(self):
         """Has things to be done after upload complete.
         """
         if self.__mode == Uploader.LOCAL_MODE:
             self.__fhandler.delete_files()
+    
+    def __get_link(self, path_list):
+        path = self.__fhandler.resolve_files(path_list)
+        log.debug(f'upload - Path: {path}.')
+
+        if self.__mode == Uploader.LOCAL_MODE:
+            return self.__local_upload(path)
+        elif self.__mode == Uploader.REMOTE_MODE:
+            return self.__remote_upload(path)
+        else:
+            raise Exception('Invalid mode.')  #TODO: change to ValueError
 
     def __local_upload(self, path):
         filename = pathlib.Path(path).name

@@ -1,9 +1,11 @@
-import os.path as osp
+import os.path as osp, logging
 from os import replace, walk as os_walk, remove
 from zipfile import ZipFile
 from shutil import copy2
 from utils import config
 
+
+log = logging.getLogger(f'Main.{__name__}')
 
 STATIC_FOLDER = config['directories']['STATIC_FOLDER']
 
@@ -22,6 +24,7 @@ class FileHandler(object):
         copy2(path, self._out_dir)
         p = osp.join(self._out_dir,
                         osp.basename(path).replace(' ', '_'))
+        log.debug(f'copy - {path} copied to {p}.')
         self._deletion_list.append(p)
         return p
     
@@ -36,6 +39,7 @@ class FileHandler(object):
     def _gen_zip(self, path_list):
         with ZipFile(self._zip_out, 'w') as z:
             for path in path_list:
+                log.debug(f'zip - {path}.')
                 len_path = len(osp.dirname(path))+1
                 if osp.isdir(path):
                     self.__zip_dir(path, z)
@@ -64,6 +68,7 @@ class FileHandler(object):
         """Delete all files copied or created.
         """
         for f in self._deletion_list:
+            log.debug(f'delete - {f}.')
             remove(f)
 
 
