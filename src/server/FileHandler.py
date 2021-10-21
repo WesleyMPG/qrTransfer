@@ -2,6 +2,7 @@ import os.path as osp, logging
 from os import replace, walk as os_walk, remove
 from zipfile import ZipFile
 from shutil import copy2
+from werkzeug.utils import secure_filename
 from utils import config
 
 
@@ -21,12 +22,12 @@ class FileHandler(object):
 
         Copy one file and adds its path to _deletion_list
         """
-        copy2(path, self._out_dir)
-        p = osp.join(self._out_dir,
-                        osp.basename(path).replace(' ', '_'))
-        log.debug(f'copy - {path} copied to {p}.')
-        self._deletion_list.append(p)
-        return p
+        file_name = secure_filename(osp.basename(path))
+        file_path = osp.join(self._out_dir, file_name)
+        copy2(path, file_path)
+        log.debug(f'copy - {path} copied to {file_path}.')
+        self._deletion_list.append(file_path)
+        return file_path
     
     def __zip_dir(self, path, zip_file):
         len_path = len(osp.dirname(path))+1
