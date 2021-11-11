@@ -1,4 +1,5 @@
 import sys, re
+from os import getenv
 from pathlib import Path
 from socket import gethostname, gethostbyname
 
@@ -12,7 +13,7 @@ def get_program_dir():
     it's real path.
 
     Returns:
-        str: dir path.
+        pathlib.Path: dir path.
     """
     if getattr(sys, 'frozen', False):
         folder = Path(sys.executable).parent
@@ -21,31 +22,6 @@ def get_program_dir():
         folder = Path(__file__).absolute()
         folder = folder.joinpath('..').resolve()
         return folder.parent
-
-
-def resource_path(relative):  #TODO: remove
-    try:
-        base = sys._MEIPASS
-    except (IsADirectoryError, AttributeError):
-        base = Path('..').resolve().absolute()
-    return base.joinpath(relative)
-
-
-def __get_ip_on_windows():  #TODO: remove
-    sub = subprocess.run(
-        ['cmd.exe', '/c', 'ipconfig | findstr IPv4'],
-        stdout=subprocess.PIPE)
-    ip = sub.stdout.decode('latin1')
-    ip = re.search(r'\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}', ip)
-    return ip
-
-
-def __get_ip_on_unix():  #TODO: remove
-    sub = subprocess.Popen(
-        "hostname -I | awk '{print $1}'",
-        shell=True, stdout=subprocess.PIPE)
-    ip = sub.stdout.read()[:-1].decode()
-    return ip
 
 
 def get_local_network_ip():

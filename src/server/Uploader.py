@@ -49,7 +49,7 @@ class Uploader(object):
         elif self.__mode == Uploader.REMOTE_MODE:
             return self.__remote_upload(path)
         else:
-            raise Exception('Invalid mode.')  #TODO: change to ValueError
+            raise ValueError('Invalid mode.')
 
     def __local_upload(self, path):
         filename = pathlib.Path(path).name

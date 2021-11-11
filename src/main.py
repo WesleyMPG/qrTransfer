@@ -1,7 +1,6 @@
 import qrcode as qr
 from time import sleep
 from server import Server, Uploader
-from display import qr_window  #TODO: remove
 from utils import get_local_network_ip, config, args, logger
 
 PORT = config['network']['PORT']
@@ -30,7 +29,7 @@ def start_server():
         sleep(1)
 
 
-def upload_mode():
+def ptm_mode():
     """Transfer from pc to mobile.
 
     "Uploads" a file to qrTransfer so it can be downloaded
@@ -46,7 +45,7 @@ def upload_mode():
     qr_window(code, at_close=u.done)
 
 
-def download_mode():  #TODO: find less confusing names
+def mtp_mode():
     """Transfer from mobile to pc 
 
     "Downloads" a file from qrTransfer
@@ -61,9 +60,9 @@ def download_mode():  #TODO: find less confusing names
 def main():
     start_server()
     if args.pc_to_mobile:
-        upload_mode()
+        ptm_mode()
     else:
-        download_mode()
+        mtp_mode()
 
 
 if __name__ == "__main__":

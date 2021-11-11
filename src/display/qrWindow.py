@@ -7,16 +7,14 @@ from kivy.core.window import Window
 from kivy.core.image import Image as CoreImage
 from kivy.uix.image import Image as kImage
 from io import BytesIO
-from os.path import join as path_join
 from utils import ROOT_DIR
 
 
 Window.size = (400, 500)
+DISPLAY_DIR = ROOT_DIR.joinpath('display')
+kv_file = DISPLAY_DIR.joinpath('kvFiles', 'qrWindow.kv')
 
-DISPLAY_DIR = path_join(ROOT_DIR, 'display')
-kv_file = path_join(DISPLAY_DIR, 'kvFiles', 'qrWindow.kv')
-
-Builder.load_file(kv_file)
+Builder.load_file(str(kv_file))
 
 def pillImg_to_texture(img):
     """Converts a PIL.Image into a kivy texture
@@ -45,7 +43,8 @@ class QrApp(App):
 
     def build(self):
         Window.clearcolor = (.1, .1, .1, 1)
-        self.icon = path_join(ROOT_DIR, 'resources', 'icon.png')
+        p = ROOT_DIR.joinpath('resources', 'icon.png')
+        self.icon = str(p)
         return QrFrame(self._code)
 
 

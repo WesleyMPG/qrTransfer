@@ -1,4 +1,5 @@
-import logging, configparser, sys, os
+import logging, configparser, sys
+from pathlib import Path
 from utils import get_program_dir
 
 __all__ = ['config']
@@ -8,15 +9,21 @@ log = logging.getLogger(f'Main.{__name__}')
 
 class ConfigHandler(object):
     def __init__(self, file_path):
+        """This class is responsable for load the config file and
+        validate its content.
+
+        Args:
+            file_path (pathlib.Path)
+        """
         self._config = None
-        self._load_file(file_path)
+        self._load_file(Path(file_path))
     
     @property
     def config(self):
         """A dict containing all settings.
 
         Returns:
-            dict of {str: dict of {str: str}}: all settings.
+            dict of {str: dict of {str: any}}: all settings.
         """
         return self._config
 
@@ -37,17 +44,17 @@ class ConfigHandler(object):
     def __assert_folders(self): 
         dirs = self._config['directories']
         for k in dirs.keys():
-            dirs[k] = os.path.abspath(dirs[k])
+            dirs[k] = str(Path(dirs[k]).absolute())
 
-        static = dirs["STATIC_FOLDER"]
+        static = Path(dirs["STATIC_FOLDER"])
         log.debug(f'folders - Static folder: {static}.')
-        if not os.path.isdir(static): 
+        if not static.is_dir(): 
             log.warning(f"Static folder doesn't exists. Creating it...")
-            os.mkdir(static)
+            static.mkdir()
 
-        upload = dirs["UPLOAD_FOLDER"]
+        upload = Path(dirs["UPLOAD_FOLDER"])
         log.debug(f'folders - Upload folder: {upload}.')
-        if not os.path.isdir(upload):
+        if not upload.is_dir():
             log.error(f'Upload folder doesn\'t exists.')
             sys.exit(1)
 
@@ -75,4 +82,5 @@ class ConfigHandler(object):
 
 
 config = ConfigHandler(
-    os.path.join(get_program_dir(), 'config.ini')).config
+    get_program_dir().joinpath('config.ini')
+).config

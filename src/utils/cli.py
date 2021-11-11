@@ -1,5 +1,5 @@
-import argparse
-import os, sys
+import argparse, sys
+from pathlib import Path
 
 __all__ = ['args']
 
@@ -52,8 +52,9 @@ info.')
 
     paths = args.path_list
     for i in range(len(paths)):
-        paths[i] = os.path.abspath(paths[i])
-        if not (os.path.isfile(paths[i]) or os.path.isdir(paths[i])):
+        paths[i] = Path(paths[i]).absolute()
+        p = Path(paths[i]).absolute()
+        if not (paths[i].is_file() or paths[i].is_dir()):
             print(f'The path {paths[i]} does not exist.')
             sys.exit(1)
 

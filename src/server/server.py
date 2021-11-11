@@ -40,17 +40,6 @@ def download(path):
     )
 
 
-@app.route('/sdwn/')  
-def shutdown():  #TODO: remove
-    shut = request.environ.get("werkzeug.server.shutdown")
-
-    if shut is None:
-        raise RuntimeError("Not running the development server.")
-
-    shut()
-    return 'Done'
-
-
 @app.route('/upload/', methods=['GET', 'POST'])
 def upload():
     """Upload function
