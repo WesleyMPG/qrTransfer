@@ -1,4 +1,5 @@
 import os, logging
+from pathlib import Path
 import requests as req
 from threading import Thread
 from werkzeug.utils import secure_filename
@@ -34,7 +35,7 @@ def download(path):
         The file.
     """
     log.debug(f'download - File: {path}.')
-    return send_file(f'{STATIC_FOLDER}/{path}',
+    return send_file(f'{Path(STATIC_FOLDER).joinpath(path)}',
                      attachment_filename=f'{path}',
                      as_attachment=True,
     )

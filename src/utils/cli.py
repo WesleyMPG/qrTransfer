@@ -54,7 +54,6 @@ info.')
     for i in range(len(paths)):
         paths[i] = Path(paths[i].strip()).absolute()
         p = Path(paths[i]).absolute()
-        print(p)
         if not (paths[i].is_file() or paths[i].is_dir()):
             print(f'The path {paths[i]} does not exist.')
             sys.exit(1)
