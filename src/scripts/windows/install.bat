@@ -43,6 +43,7 @@ echo LANGUAGE = en) > %folder%\config.ini
 
 ::Install
 copy qrTransfer.exe %folder%
+copy uninstall.bat %folder%
 copy icon.ico %folder%
 copy scripts\qrTransfer.lnk %folder%
 copy scripts\qrTransfer-MTP.lnk %folder%

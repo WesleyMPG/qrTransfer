@@ -8,4 +8,4 @@ Actions=sendTo;receiveOn;
 [Desktop Action sendTo]
 Name=Send To qrTransfer
 Name[pt]=Enviar Para qrTransfer
-Exec=qrTransfer -p %u;
+Exec=qrTransfer -p %U;

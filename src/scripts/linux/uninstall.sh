@@ -1,5 +1,7 @@
 #!/bin/bash
 
+trap "exit 0" SIGINT
+
 folders=(
     "$HOME/.local/share/qrTransfer"
 )
@@ -7,6 +9,8 @@ folders=(
 files=(
     "/usr/local/bin/qrTransfer"
     "/usr/share/applications/qrTransfer-MTP.desktop"
+    "/usr/share/applications/qrTransfer.desktop"
+    "/usr/share/Thunar/sendto/thunar-sendto-qrTransfer.desktop"
     "$HOME/.local/share/nautilus/scripts/qrTransfer"
     "$HOME/.local/share/kservices5/qrTransfer-service.desktop"
 )

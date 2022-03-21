@@ -1,12 +1,11 @@
 import requests as req
-import pathlib, os
-from shutil import copy2
+import pathlib, logging
+from server import FileHandler
 from utils import get_local_network_ip, config
 
+log = logging.getLogger(f'Main.{__name__}')
 
-STATIC_FOLDER = config['directories']['STATIC_FOLDER']
 PORT = config['network']['PORT']
-
 
 class Uploader(object):
     """A manager to upload modes.
@@ -24,29 +23,38 @@ class Uploader(object):
     def __init__(self, mode=LOCAL_MODE):
         self.__mode = mode
         self.__path = ''
-        if mode == Uploader.LOCAL_MODE:
-            self._upload = self.__local_upload
-        elif mode == Uploader.REMOTE_MODE:
-            self._upload = self.__remote_upload
-        else:
-            raise Exception('Invalid mode.')  #TODO: change to ValueError
-
-    def upload(self, path):
+        self.__fhandler = FileHandler()
+        
+    def upload(self, path_list):
         """Upload a file.
         """
-        return self._upload(path)
+        log.debug(f'upload - Mode: {self.__mode}')
+
+        link = self.__get_link(path_list) 
+        log.debug(f'upload - Link: {link}')
+        return link
 
     def done(self):
         """Has things to be done after upload complete.
         """
         if self.__mode == Uploader.LOCAL_MODE:
-            os.remove(self.__path)
+            self.__fhandler.delete_files()
+    
+    def __get_link(self, path_list):
+        path = self.__fhandler.resolve_files(path_list)
+        log.debug(f'upload - Path: {path}.')
+
+        if self.__mode == Uploader.LOCAL_MODE:
+            return self.__local_upload(path)
+        elif self.__mode == Uploader.REMOTE_MODE:
+            return self.__remote_upload(path)
+        else:
+            raise ValueError('Invalid mode.')
 
     def __local_upload(self, path):
-        self.__copy_file(pathlib.Path(path))
         filename = pathlib.Path(path).name
         ip = get_local_network_ip()
-        return f'http://{ip}:5000/download/{filename}'
+        return f'http://{ip}:{PORT}/download/{filename}'
 
     def __remote_upload(self, path):
         """Uploads the file to file.io
@@ -58,11 +66,7 @@ class Uploader(object):
             )
         return r.json()['link']
 
-    def __copy_file(self, path : pathlib.Path):
-        destination = STATIC_FOLDER
-        copy2(path, destination)
-
-        self.__path = pathlib.PurePath(destination, path.name)
+    
 
 
 if __name__ == "__main__":
