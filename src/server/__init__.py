@@ -1,3 +1,3 @@
 from .FileHandler import FileHandler
 from .server import Server
-from .Uploader import Uploader
+from .uploader.UploaderFactory import UploaderFactory

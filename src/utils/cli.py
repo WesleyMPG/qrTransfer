@@ -32,6 +32,7 @@ parser.add_argument('-mtp',
 
 parser.add_argument('--remote',
                     action='store_true',
+                    dest='shall_remote_upload',
                     help='- Enables transfer through the remote \
                     service file.io'
 )
