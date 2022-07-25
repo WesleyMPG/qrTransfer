@@ -3,6 +3,7 @@ from time import sleep
 from server import Server, UploaderFactory
 from utils import get_local_network_ip, config, args, logger
 from PIL import Image as PIL_Image
+from utils import config_handler
 
 
 class QrTransfer(object):
@@ -35,12 +36,19 @@ class QrTransfer(object):
         u = UploaderFactory.getUploader(True)
         link = u.upload_files(args.path_list)
         code = self.__generate_qrCode(link)
-        qr_window(code, at_close=u.remove_file_copies)
+        qr_window(code, at_close=self.__on_close(u))
 
+    @staticmethod
+    def __on_close(uploader):
+        def tmp():
+            uploader.remove_file_copies
+            config_handler.save_config()
+        return tmp
+        
     def __start_mobile_to_pc_mode(self):
         from display import qr_window
         code = self.__generate_mobile_to_pc_code()
-        qr_window(code)
+        qr_window(code, at_close=config_handler.save_config)
 
     def __generate_mobile_to_pc_code(self):
         ip = get_local_network_ip()

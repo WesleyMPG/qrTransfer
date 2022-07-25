@@ -16,7 +16,8 @@ class ConfigHandler(object):
             file_path (pathlib.Path)
         """
         self._config = None
-        self._load_file(Path(file_path))
+        self._file_path = Path(file_path)
+        self._load_file()
     
     @property
     def config(self):
@@ -26,11 +27,17 @@ class ConfigHandler(object):
             dict of {str: dict of {str: any}}: all settings.
         """
         return self._config
+    
+    def __assert_config(self):
+        self.__assert_structure()
+        self.__assert_folders()
+        self.__assert_network()
 
     def __assert_structure(self):
         structure = {
             'directories': ['STATIC_FOLDER', 'UPLOAD_FOLDER'],
             'network': ['PORT'],
+            'saving': ['ZIP_FILES'],
         }
         for s in structure.keys():
             if s not in self._config.sections():
@@ -65,22 +72,18 @@ class ConfigHandler(object):
         if not ntw['PORT'].isdecimal():
             log.warning('Invalid port value. Setting default...')
             ntw['PORT'] = '5000'
-
-    def __assert_config(self):
-        self.__assert_structure()
-        self.__assert_folders()
-        self.__assert_network()
         
-    def _load_file(self, file_path):
-        """Read settings in file_path
-        """
+    def _load_file(self):
         log.info("Loading config file.")
-        config = configparser.ConfigParser()
-        config.read(file_path)
-        self._config = config
+        self._config = configparser.ConfigParser()
+        self._config.read(self._file_path)
         self.__assert_config()
+        
+    def save_config(self):
+        log.info("Saving config file.")
+        with open(self._file_path, 'w') as f:
+            self._config.write(f)
 
 
-config = ConfigHandler(
-    get_program_dir().joinpath('config.ini')
-).config
+config_handler = ConfigHandler(get_program_dir().joinpath('config.ini'))
+config = config_handler.config
