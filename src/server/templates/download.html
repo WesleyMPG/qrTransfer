@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block title%}Download files{% endblock %}
+
+{% block css%}
+    .list {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+    }
+
+    .list-item {
+        width: calc(100% - 30px);
+        padding: 10px 15px;
+    }
+
+    .list-item:first-of_type {
+        border-radius: 5px 5px 0 0;
+    }
+
+    .list-item:nth-of-type(2n+1) {
+        background-color: #525252;
+    }
+
+    .list-item:last-of-type {
+        border-radius: 0 0 5px 5px;
+    }
+    
+    .list-item:link {
+        color: #fff;
+    }
+{% endblock %}
+
+{% block content %}
+    <div class="list">
+        <button class="btn" onclick="downloadAll()">Download All</button>
+    {% for file in files %}
+        <a class="list-item" href="{{ file }}">{{ file }}</a>
+    {% endfor %}
+    </div>
+{% endblock %}
+
+{% block script %}
+    <script>
+        function downloadAll() {
+            links = [...document.querySelectorAll('.list-item')];
+            for (let i = 0; i < links.length; i++) {
+                setTimeout(() => {
+                    links[i].click();
+                }, i * 100);
+            }
+        }
+    </script>
+{% endblock %}
+</html>
