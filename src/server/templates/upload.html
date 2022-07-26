@@ -1,163 +1,51 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width">
-        <title>Upload file</title>
-        <style type="text/css" media="screen">
-            body{
-                background-color: rgb(43, 44, 44);
-            }
-    
-            h1 {
-                display: block;
-                text-align: center;
-                color: lightgray;
-            }
-    
-            .container {
-                display: flex;
-                justify-content: center;    
-                align-items: center;
-                flex-wrap: wrap;
-                min-height: 15vh;
-                margin: 10px auto;
-                border: 1px solid rgb(70, 70, 70);
-                border-radius: 5px;
-            }
-    
-            form {
-                display: flex;
-                flex-direction: column;
-                justify-content: center;
-                align-items: center;
-                width: 100%;
-            }
-    
-            #file {
-                display: none;
-            }
-    
-            #select {
-                display: flex;
-                align-items: center;
-                justify-content: center;
-            }
-    
-            #fileName {
-                overflow: hidden;
-                text-overflow: ellipsis;
-            }
-    
-            .btn {
-                width: 50%;
-                height: 40px;
-                vertical-align: middle;
-                text-align: center;
-                font-family: Arial, Helvetica, sans-serif;
-                font-size: 14px;
-                background-color: rgb(75, 75, 75);
-                color: lightgray;
-                border: 1px solid black;
-                border-radius: 7px;
-                margin: 7px;
-            }
-    
-            .btn:hover {
-                color: black;
-                background-color: rgb(133, 133, 133);
-                border-color: rgb(41, 41, 41);
-            }
-    
-            .btn:active {
-                color: black;
-                background-color: rgb(97, 97, 97);
-                border-color: rgb(41, 41, 41);
-            }
+{% extends "base.html" %}
+{% block title%}Upload file{% endblock %}
+{% block content %}
+    {% if mode == 'pick' %}
+    <form method=post enctype=multipart/form-data>
+        <input type="file" name="file" multiple
+            id="file" value="select file">
+        <label for="file" id="select" class="btn">
+            <p id='fileName'>
+            select file
+            </p> 
+        </label>
+        <input type="submit" name="submit" class="btn"
+            id="submit" value="upload file">
+    </form>
+    {% else %}
+    <span class="done">Success</span>
+    {% endif %}
+{% endblock %}
 
-            .bar {
-                width: 45vw;
-                height: 10px;
-                border-radius: .5rem;
-                background-color: lightgray;
-            }
+{% block script %}
+    <script>
+        // add progress bar on submit
+        let form = document.querySelector('div form');
+        form.addEventListener('submit', (e) => {
+            form.style.display = 'none';
+            let container = document.getElementById('container');
+            let bar = document.createElement('div');
+            let progress = document.createElement('div');
+            bar.classList.add('bar');
+            progress.classList.add('progress');
+            bar.appendChild(progress);
+            container.appendChild(bar);
+        });
 
-            .progress {
-                width: 20%;
-                height: 100%;
-                background-color: rgb(75, 75, 75);
-                border-radius: .5rem;
-                position: relative;
-                animation: progress-animation 3s linear infinite;
+        function update(e) {
+            let size = file.files.length;
+            if (size == 1) {
+                fileName.textContent = file.files[0].name;
+            } else {
+                fileName.textContent = `${size} files selected`;
             }
-    
-            .done {
-                width: 50%;
-                height: 40px;
-                line-height: 40px;
-                vertical-align: middle;
-                text-align: center;
-                font-family: Arial, Helvetica, sans-serif;
-                font-size: 18px;
-                color: lightgray;
-                margin: 7px;
-            }
-    
+        }
 
-            @keyframes progress-animation {
-                0% { left: 0%; }
-                50% { left: 80%; }
-                100% { left: 0%; }
-            }
-        </style>
-    </head>
-    <body>
-        <h1>qrTransfer</h1>
-        <div id="container" class="container">
-            {% if mode == 'pick' %}
-            <form method=post enctype=multipart/form-data>
-                <input type="file" name="file" multiple
-                    id="file" value="select file">
-                <label for="file" id="select" class="btn">
-                    <p id='fileName'>
-                    select file
-                    </p> 
-                </label>
-                <input type="submit" name="submit" class="btn"
-                    id="submit" value="upload file">
-            </form>
-            {% else %}
-            <span class="done">Success</span>
-            {% endif %}
-        </div>
-        
-        <script>
-            // add progress bar on submit
-            let form = document.querySelector('div form');
-            form.addEventListener('submit', (e) => {
-                form.style.display = 'none';
-                let container = document.getElementById('container');
-                let bar = document.createElement('div');
-                let progress = document.createElement('div');
-                bar.classList.add('bar');
-                progress.classList.add('progress');
-                bar.appendChild(progress);
-                container.appendChild(bar);
-            });
+        const file = document.querySelector('#file');
+        const fileName = document.querySelector('#fileName');
 
-            function update(e) {
-                let size = file.files.length;
-                if (size == 1) {
-                    fileName.textContent = file.files[0].name;
-                } else {
-                    fileName.textContent = `${size} files selected`;
-                }
-            }
-    
-            const file = document.querySelector('#file');
-            const fileName = document.querySelector('#fileName');
-    
-            file.addEventListener('change', update)
-        </script>
-    </body>
+        file.addEventListener('change', update)
+    </script>
+{% endblock %}
 </html>

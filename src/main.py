@@ -9,7 +9,7 @@ class QrTransfer(object):
     PORT = config['network']['PORT']
 
     def __init__(self):
-        __qrCode_params = {
+        self.__qrCode_params = {
             'box_size': 10,
             'border': 2,
         }
@@ -32,8 +32,8 @@ class QrTransfer(object):
 
     def __start_pc_to_mobile_mode(self):
         from display import qr_window
-        u = UploaderFactory.getUploader(args.shall_remote_upload)
-        link = u.upload(args.path_list)
+        u = UploaderFactory.getUploader(True)
+        link = u.upload_files(args.path_list)
         code = self.__generate_qrCode(link)
         qr_window(code, at_close=u.remove_file_copies)
 
@@ -48,7 +48,7 @@ class QrTransfer(object):
         return self.__generate_qrCode(link)
 
     def __generate_qrCode(self, text) -> PIL_Image:
-        code = qr.QRCode(**self._qrCode_params)
+        code = qr.QRCode(**self.__qrCode_params)
         code.add_data(text)
         code.make(fit=True)
         return code.make_image()

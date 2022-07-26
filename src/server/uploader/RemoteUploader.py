@@ -1,16 +1,16 @@
 import requests as req
 import logging
+from .AbstractUploader import AbstractUploader
 
-
-class RemoteUploader(object):
+class RemoteUploader(AbstractUploader):
 
     def __init__(self):
         super().__init__(logging.getLogger(f'Main.{__name__}'))
             
     def _get_link(self, path_list):
         path = self.__fhandler.resolve_files(path_list)
-        self.__log.debug(f'upload - Path: {path}.')
-        return self.__upload_remotely(path)
+        self._log.debug(f'upload - Path: {path}.')
+        return self._upload_remotely(path)
 
     def __upload_remotely(self, path):
         with open(path, 'rb') as file:

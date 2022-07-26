@@ -5,6 +5,7 @@ from threading import Thread
 from werkzeug.utils import secure_filename
 from flask import Flask, request, send_file, redirect, flash, render_template
 from utils import config
+from .helpers import list_files_to_download
 
 
 __all__ = ['Server']
@@ -24,6 +25,21 @@ def hello_world():
     return 'working'
 
 
+@app.get('/download/')
+def multidownload():
+    """File download function
+
+    Args:
+        paths (list): List of paths to the files. Usually just their names. 
+
+    Returns:
+        The files.
+    """
+    files = list_files_to_download()
+    log.debug(f'multidownload - Files: {files}.')
+    return render_template('download.html', files=files)
+
+
 @app.route('/download/<path:path>')
 def download(path):
     """File download function
@@ -39,7 +55,7 @@ def download(path):
                      attachment_filename=f'{path}',
                      as_attachment=True,
     )
-
+    
 
 @app.route('/upload/', methods=['GET', 'POST'])
 def upload():

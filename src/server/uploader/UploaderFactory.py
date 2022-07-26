@@ -8,7 +8,7 @@ class UploaderFactory(object):
     @staticmethod
     def getUploader(is_local: bool) -> AbstractUploader:
         if is_local:
-            return LocalUploader
+            return LocalUploader()
         else:
-            return RemoteUploader
+            return RemoteUploader()
         
