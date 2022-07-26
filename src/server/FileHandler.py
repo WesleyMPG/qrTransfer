@@ -17,7 +17,29 @@ class FileHandler(object):
         self._out_dir = STATIC_FOLDER
         self._zip_out = STATIC_FOLDER.joinpath('qrTransfer-files.zip')
         self._deletion_list = []
+    
+    def resolve_files(self, path_list):
+        """Generates the path or path list for the copied files.
 
+        If path_list contains only one path which is a directory or
+        multiple paths and ZIP_FILES is true, a .zip is file created, 
+        else a copy of the file(s) is generated.
+
+        Args:
+            path_list (list of pathlib.Path)
+
+        Returns:
+            str: path to file.
+            [str]: paths to files.
+        """
+        if len(path_list) == 1 \
+        and not path_list[0].is_dir():
+            return self.__copy_file(path_list[0])
+        elif not config.getboolean('saving', 'ZIP_FILES'):
+            return self.__copy_all_files(path_list)
+        else:
+            return self._gen_zip(path_list)
+        
     def __copy_file(self, path):
         """Makes a copy to STATIC_FOLDER.
 
@@ -32,8 +54,31 @@ class FileHandler(object):
         log.debug(f'copy - {path} copied to {file_path}.')
         self._deletion_list.append(file_path)
         return file_path
+        
+    def __copy_all_files(self, path_list):
+        tmp = []
+        for path in path_list:
+            t = self.__copy_file(path)
+            tmp.append(t)
+        return tmp
+
+    def _gen_zip(self, path_list):
+        """Generates a zip file.
+
+        returns:
+            The path to the zip file.
+        """
+        with ZipFile(self._zip_out, 'w') as z:
+            for path in path_list:
+                log.debug(f'zip - {path}.')
+                if path.is_dir():
+                    self.__zip_a_dir(str(path), z)
+                else:
+                    z.write(path, path.name)
+        self._deletion_list.append(self._zip_out)
+        return self._zip_out
     
-    def __zip_dir(self, path, zip_file):
+    def __zip_a_dir(self, path, zip_file):
         """This adds a folder to 'zip_file'
 
         Args:
@@ -46,41 +91,6 @@ class FileHandler(object):
                 file_path = osp.join(folder, name)
                 relative_path = file_path[len_path:]
                 zip_file.write(file_path, relative_path)
-
-    def _gen_zip(self, path_list):
-        """Generates a zip file.
-
-        Args:
-            path_list (list of pathlib.Path)
-        """
-        with ZipFile(self._zip_out, 'w') as z:
-            for path in path_list:
-                log.debug(f'zip - {path}.')
-                if path.is_dir():
-                    self.__zip_dir(str(path), z)
-                else:
-                    z.write(path, path.name)
-        self._deletion_list.append(self._zip_out)
-        return self._zip_out
-
-    def resolve_files(self, path_list):
-        """Generates a single path for the path_list.
-
-        If path_list contains only one path which is a directory or
-        multiple paths a .zip is file created else a copy of the file
-        is generated.
-
-        Args:
-            path_list (list of pathlib.Path)
-
-        Returns:
-            str: path to file.
-        """
-        if len(path_list) == 1 \
-        and not path_list[0].is_dir():
-            return self.__copy_file(path_list[0])
-        else:
-            return self._gen_zip(path_list)
 
     def delete_files(self):
         """Deletes all files copied or created.
