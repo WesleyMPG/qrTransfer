@@ -1,5 +1,5 @@
 import pathlib, logging
-from utils import get_local_network_ip, config
+from src.utils import get_local_network_ip, config
 from .AbstractUploader import AbstractUploader
 
 
@@ -7,8 +7,8 @@ class LocalUploader(AbstractUploader):
 
     PORT = config['network']['PORT']
 
-    def __init__(self):
-        super().__init__(logging.getLogger(f'Main.{__name__}'))
+    def __init__(self, file_handler):
+        super().__init__(file_handler, logging.getLogger(f'Main.{__name__}'))
         self._ip = get_local_network_ip()
             
     def _get_link(self, path_list):

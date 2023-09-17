@@ -1,11 +1,10 @@
-from server import FileHandler
 
 
 class AbstractUploader(object):
 
-    def __init__(self, log):
+    def __init__(self, file_handler, log):
         self._log = log
-        self._fhandler = FileHandler()
+        self._fhandler = file_handler
         
     def upload_files(self, path_list):
         self._log.debug(f'upload - type: {type(self)}.')

@@ -1,7 +1,8 @@
 import qrcode as qr
 from time import sleep
 from server import Server, UploaderFactory
-from utils import get_local_network_ip, config, args, logger
+from src.utils import get_local_network_ip, config, logger
+from cli import args
 from PIL import Image as PIL_Image
 from utils import config_handler
 
@@ -33,7 +34,7 @@ class QrTransfer(object):
 
     def __start_pc_to_mobile_mode(self):
         from display import qr_window
-        u = UploaderFactory.getUploader(True)
+        u = UploaderFactory.getUploader(is_local=True)
         link = u.upload_files(args.path_list)
         code = self.__generate_qrCode(link)
         qr_window(code, at_close=self.__on_close(u))

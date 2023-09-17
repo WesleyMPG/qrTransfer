@@ -1,5 +1,5 @@
 import logging, logging.handlers
-from utils import get_logs_dir, args
+from src.utils import get_logs_dir
 
 # Create main logger
 logger = logging.getLogger('Main')
@@ -11,8 +11,7 @@ s_handler = logging.StreamHandler()
 s_handler.setFormatter(logging.Formatter(
     '[%(levelname)-8s] %(module)-13s : %(message)s'))
 
-if not args.debug:
-    s_handler.setLevel(logging.INFO)
+s_handler.setLevel(logging.INFO)
 
 logger.addHandler(s_handler)
 

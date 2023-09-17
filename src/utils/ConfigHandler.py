@@ -1,6 +1,6 @@
 import logging, configparser, sys
 from pathlib import Path
-from utils import get_program_dir
+from src.utils import get_program_dir
 
 __all__ = ['config']
 
