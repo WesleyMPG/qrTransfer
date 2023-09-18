@@ -72,7 +72,7 @@ def validate_path(p : Path):
 class MockArgs:
     mobile_to_pc = True
     pc_to_mobile = False
-    debug = True
+    debug = False
 
 
 if not 'pytest' in sys.modules:

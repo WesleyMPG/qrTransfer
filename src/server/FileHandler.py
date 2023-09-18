@@ -34,11 +34,11 @@ class FileHandler(object):
         """
         if len(path_list) == 0: return [self._out_dir]
         if len(path_list) == 1 and not path_list[0].is_dir():
-            return self.__copy_file(path_list[0])
+            return [self.__copy_file(path_list[0])]
         elif not self._zip_files:
             return self.__copy_all_files(path_list)
         else:
-            return self._gen_zip(path_list)
+            return [self._gen_zip(path_list)]
         
     def __copy_file(self, path : Path):
         """Makes a copy to static_folder.

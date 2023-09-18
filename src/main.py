@@ -34,7 +34,7 @@ class QrTransfer(object):
 
     def __start_pc_to_mobile_mode(self):
         from display import qr_window
-        u = UploaderFactory.getUploader(is_local=True)
+        u = UploaderFactory.get_uploader(is_local=True)
         link = u.upload_files(args.path_list)
         code = self.__generate_qrCode(link)
         qr_window(code, at_close=self.__on_close(u))
