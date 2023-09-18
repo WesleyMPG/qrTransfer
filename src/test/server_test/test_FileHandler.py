@@ -1,7 +1,7 @@
 import pytest
 from os import listdir as os_listdir
-from src.server.FileHandler import FileHandler
-from src.utils.constants import ZIP_FILE_NAME
+from server.FileHandler import FileHandler
+from utils.constants import ZIP_FILE_NAME
 
 class TestFileHandler(object):
 
@@ -47,27 +47,34 @@ class TestFileHandler(object):
         assert result == tmp_path / self.example_file_names[0]
         with open(result) as result_file:
             assert result_file.readlines() == example_file.readlines()
+    
+    def test_resolve_files_with_one_file_and_no_zip_files(self, tmp_path, one_file_path):
+        file_handler = FileHandler(tmp_path, zip_files=False)
+        result = file_handler.resolve_files([one_file_path])
+
+        expected_file_path = tmp_path / self.example_file_names[0]
+        assert result == expected_file_path
 
     def test_resolve_files_with_multiple_files_and_zip_files(self, tmp_path, multiple_file_paths):
         file_handler = FileHandler(tmp_path, zip_files=True)
         result = file_handler.resolve_files(multiple_file_paths)
 
-        expected = tmp_path / ZIP_FILE_NAME
-        assert result == expected
+        expected_zipped_file_path = tmp_path / ZIP_FILE_NAME
+        assert result == expected_zipped_file_path
 
     def test_resolve_files_with_multiple_files_and_no_zip_files(self, tmp_path, multiple_file_paths):
         file_handler = FileHandler(tmp_path, zip_files=False)
         result = file_handler.resolve_files(multiple_file_paths)
 
-        expected = list(map(lambda p: tmp_path / p, self.example_file_names))
-        assert result == expected
+        expected_list_of_file_paths = list(map(lambda p: tmp_path / p, self.example_file_names))
+        assert result == expected_list_of_file_paths
 
     def test_resolve_files_with_empty_folder_and_zip_files(self, tmp_path, create_empty_folder):
         file_handler = FileHandler(tmp_path)
         result = file_handler.resolve_files([tmp_path / self.empty_folder_name])
 
-        expected = tmp_path / ZIP_FILE_NAME
-        assert result == expected
+        expected_zipped_file_path = tmp_path / ZIP_FILE_NAME
+        assert result == expected_zipped_file_path
 
     def test_delete_files_after_resolved_files(self, tmp_path, file_handler_with_resolved_files):
         count_before_delete = len(os_listdir(tmp_path))

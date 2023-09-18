@@ -1,5 +1,5 @@
 import pathlib, logging
-from src.utils import get_local_network_ip, config
+from utils import get_local_network_ip, config
 from .AbstractUploader import AbstractUploader
 
 

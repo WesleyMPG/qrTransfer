@@ -4,7 +4,7 @@ import requests as req
 from threading import Thread
 from werkzeug.utils import secure_filename
 from flask import Flask, request, send_file, redirect, flash, render_template
-from src.utils import config
+from utils import config
 from .helpers import list_files_to_download
 
 

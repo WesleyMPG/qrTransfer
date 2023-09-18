@@ -11,8 +11,7 @@ from kivymd.uix.boxlayout import MDBoxLayout
 from kivy.properties import BooleanProperty, StringProperty
 from kivymd.uix.list import IRightBodyTouch, OneLineAvatarIconListItem
 from PIL import Image
-
-from src.utils import ROOT_DIR, config
+from utils import ROOT_DIR, config
 from .menu_items import settings_items
 
 

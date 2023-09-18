@@ -1,6 +1,6 @@
 from .FileHandler import FileHandler
 from pathlib import Path
-from src.utils import config
+from utils import config
 
 
 class FileHandlerFactory(object):

@@ -4,7 +4,7 @@ from pathlib import Path
 from zipfile import ZipFile
 from shutil import copy2
 from werkzeug.utils import secure_filename
-from src.utils.constants import ZIP_FILE_NAME
+from utils.constants import ZIP_FILE_NAME
 
 
 log = logging.getLogger(f'Main.{__name__}')

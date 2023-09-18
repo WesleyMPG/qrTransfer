@@ -1,7 +1,7 @@
 from .LocalUploader import LocalUploader
 from .RemoteUploader import RemoteUploader
 from .AbstractUploader import AbstractUploader
-from src.server.FileHandlerFactory import FileHandlerFactory
+from server.FileHandlerFactory import FileHandlerFactory
 
 
 class UploaderFactory(object):

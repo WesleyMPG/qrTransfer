@@ -1,8 +1,8 @@
 import qrcode as qr
 from time import sleep
 from server import Server, UploaderFactory
-from src.utils import get_local_network_ip, config, logger
-from cli import args
+from utils import get_local_network_ip, config, logger
+from utils.cli import args
 from PIL import Image as PIL_Image
 from utils import config_handler
 

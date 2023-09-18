@@ -1,5 +1,5 @@
 import os
-from src.utils import config
+from utils import config
 
 STATIC_FOLDER = config['directories']['STATIC_FOLDER']
 
