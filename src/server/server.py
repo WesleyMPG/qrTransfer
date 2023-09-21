@@ -1,4 +1,4 @@
-import os, logging
+import os, logging, signal
 from pathlib import Path
 import requests as req
 from threading import Thread
@@ -22,6 +22,11 @@ app.secret_key = os.urandom(16).hex()
 def hello_world():
     return 'working'
 
+
+@app.route('/shutdown/')
+def shutdown():
+    os.kill(os.getpid(), signal.SIGSTOP)
+    
 
 @app.get('/download/')
 def multidownload():
@@ -74,7 +79,6 @@ def upload():
     return render_template('upload.html', mode='done')
 
 
-
 class Server(object):
     @staticmethod
     def run():
@@ -102,6 +106,13 @@ class Server(object):
             return True
         except req.exceptions.ConnectionError:
             return False
+
+    @staticmethod
+    def stop():
+        try:
+            req.get(f'http://localhost:{PORT}/shutdown/')
+        except req.exceptions.ConnectionError:
+            pass
 
 
 if __name__ == "__main__":

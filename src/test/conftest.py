@@ -1,11 +1,34 @@
-import sys
+import sys, os, signal
 from pathlib import Path
 import pytest
 
 src = Path(__file__).parent.parent
 sys.path.append(str(src))
 
+from server import Server
 from utils import config
+
+
+PORT = config.get('network', 'PORT')
+BASE_URL = f'http://localhost:{PORT}'
+
+
+@pytest.fixture
+def firefox_options(firefox_options):
+    # firefox_options.add_argument('-headless')
+    return firefox_options
+
+
+@pytest.fixture(scope='session')
+def base_url():
+    return BASE_URL
+
+
+@pytest.fixture(scope='session', autouse=True)
+def server():
+    pid = Server.run()
+    yield
+    Server.stop()
 
 
 @pytest.fixture
@@ -54,3 +77,5 @@ def disable_zip_file():
 @pytest.fixture
 def enable_zip_file():
     config.set('saving', 'ZIP_FILES', 'True')
+
+

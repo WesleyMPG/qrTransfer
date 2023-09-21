@@ -4,4 +4,5 @@
 workspace.code-workspace
 .vscode
 *logs
-
+*.log
+.coverage
