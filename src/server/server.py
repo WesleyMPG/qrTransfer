@@ -1,4 +1,5 @@
 import os, logging, signal
+from time import sleep
 from pathlib import Path
 import requests as req
 from threading import Thread
@@ -13,6 +14,7 @@ log = logging.getLogger(f'Main.{__name__}')
 
 STATIC_FOLDER = config.get('directories', 'STATIC_FOLDER')
 PORT = config.get('network', 'PORT')
+SHUTDOWN_WAIT_TIME = 2
 
 app = Flask(__name__, static_folder=STATIC_FOLDER)
 app.secret_key = os.urandom(16).hex()
@@ -23,10 +25,17 @@ def hello_world():
     return 'working'
 
 
-@app.route('/shutdown/')
-def shutdown():
-    os.kill(os.getpid(), signal.SIGSTOP)
+@app.route('/test_shutdown/')
+def trigger_sutdown():
+    st = Thread(target=shutdown, args=[os.getpid()], daemon=True)
+    st.start()
+    return f"<h1>This route is meant for testing purposes. Shutting down in {SHUTDOWN_WAIT_TIME} seconds</h1>"
     
+
+def shutdown(pid):
+    sleep(SHUTDOWN_WAIT_TIME)
+    os.kill(pid, signal.SIGSTOP)
+
 
 @app.get('/download/')
 def multidownload():
@@ -110,7 +119,7 @@ class Server(object):
     @staticmethod
     def stop():
         try:
-            req.get(f'http://localhost:{PORT}/shutdown/')
+            req.get(f'http://localhost:{PORT}/test_shutdown/')
         except req.exceptions.ConnectionError:
             pass
 

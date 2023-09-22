@@ -11,33 +11,39 @@ from utils import config
 
 PORT = config.get('network', 'PORT')
 BASE_URL = f'http://localhost:{PORT}'
+UPLOAD_FOLDER = Path(config.get('directories', 'UPLOAD_FOLDER'))
 
 
 @pytest.fixture
 def firefox_options(firefox_options):
-    # firefox_options.add_argument('-headless')
+    firefox_options.add_argument('-headless')
     return firefox_options
 
 
 @pytest.fixture(scope='session')
-def base_url():
+def base_url() -> str:
     return BASE_URL
 
 
 @pytest.fixture(scope='session', autouse=True)
 def server():
-    pid = Server.run()
+    Server.run()
     yield
     Server.stop()
 
 
 @pytest.fixture
-def example_file_names():
+def upload_folder() -> Path:
+    return UPLOAD_FOLDER
+
+
+@pytest.fixture
+def example_file_names() -> list[str]:
     return ['simple_file.txt', 'simple_file2.txt', 'simple_file3.txt',]
 
 
 @pytest.fixture
-def empty_folder_name():
+def empty_folder_name() -> str:
     return 'empty_folder'
 
 
@@ -48,24 +54,24 @@ def create_empty_folder(tmp_path, empty_folder_name):
 
 
 @pytest.fixture
-def one_file_path(shared_datadir, example_file_names):
+def example_file_path(shared_datadir, example_file_names) -> Path:
     return shared_datadir / example_file_names[0]
 
 
 @pytest.fixture
-def multiple_file_paths(shared_datadir, example_file_names):
+def multiple_file_paths(shared_datadir, example_file_names) -> list[Path]:
     paths = map(lambda p: shared_datadir / p, example_file_names)
     return list(paths)
 
 
 @pytest.fixture
-def one_file_name(example_file_names):
+def example_file_name(example_file_names):
     return example_file_names[0]
 
 
 @pytest.fixture
-def example_file(one_file_path):
-    with open(str(one_file_path)) as file:
+def example_file(example_file_path):
+    with open(str(example_file_path)) as file:
         yield file
 
 

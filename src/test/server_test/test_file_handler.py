@@ -18,18 +18,18 @@ class TestFileHandler(object):
         result = file_handler.resolve_files([])
         assert result == [tmp_path]
 
-    def test_resolve_files_with_one_file(self, tmp_path, example_file, one_file_path, example_file_names):
+    def test_resolve_files_with_one_file(self, tmp_path, example_file, example_file_path, example_file_names):
         file_handler = FileHandler(tmp_path)
-        result = file_handler.resolve_files([one_file_path])
+        result = file_handler.resolve_files([example_file_path])
 
         assert len(result) == 1
         assert result == [tmp_path / example_file_names[0]]
         with open(result[0]) as result_file:
             assert result_file.readlines() == example_file.readlines()
     
-    def test_resolve_files_with_one_file_and_no_zip_files(self, tmp_path, one_file_path, example_file_names):
+    def test_resolve_files_with_one_file_and_no_zip_files(self, tmp_path, example_file_path, example_file_names):
         file_handler = FileHandler(tmp_path, zip_files=False)
-        result = file_handler.resolve_files([one_file_path])
+        result = file_handler.resolve_files([example_file_path])
 
         expected_file_path = [tmp_path / example_file_names[0]]
         assert result == expected_file_path
