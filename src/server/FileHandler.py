@@ -29,7 +29,6 @@ class FileHandler(object):
             path_list (:obj:`list` of :obj:`pathlib.Path`)
 
         Returns:
-            str: path to file.
             [str]: paths to files.
         """
         if len(path_list) == 0: return [self._out_dir]
@@ -40,7 +39,7 @@ class FileHandler(object):
         else:
             return [self._gen_zip(path_list)]
         
-    def __copy_file(self, path : Path):
+    def __copy_file(self, path : Path) -> Path:
         """Makes a copy to static_folder.
 
         It copies the file and adds its path to _deletion_list
@@ -55,14 +54,14 @@ class FileHandler(object):
         self._deletion_list.append(file_path)
         return file_path
         
-    def __copy_all_files(self, path_list: [Path]):
+    def __copy_all_files(self, path_list: [Path]) -> list[Path]:
         tmp = []
         for path in path_list:
             t = self.__copy_file(path)
             tmp.append(t)
         return tmp
 
-    def _gen_zip(self, path_list):
+    def _gen_zip(self, path_list) -> Path:
         """Generates a zip file.
 
         returns:

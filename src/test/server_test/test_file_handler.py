@@ -8,9 +8,9 @@ class TestFileHandler(object):
 
 
     @pytest.fixture
-    def file_handler_with_resolved_files(self, tmp_path, multiple_file_paths):
+    def file_handler_with_resolved_files(self, tmp_path, example_file_paths):
         file_handler = FileHandler(tmp_path, zip_files=False)
-        file_handler.resolve_files(multiple_file_paths)
+        file_handler.resolve_files(example_file_paths)
         return file_handler
 
     def test_resolve_files_with_no_files(self, tmp_path):
@@ -34,23 +34,23 @@ class TestFileHandler(object):
         expected_file_path = [tmp_path / example_file_names[0]]
         assert result == expected_file_path
 
-    def test_resolve_files_with_multiple_files_and_zip_files(self, tmp_path, multiple_file_paths):
+    def test_resolve_files_with_multiple_files_and_zip_files(self, tmp_path, example_file_paths):
         file_handler = FileHandler(tmp_path, zip_files=True)
-        result = file_handler.resolve_files(multiple_file_paths)
+        result = file_handler.resolve_files(example_file_paths)
 
         expected_zipped_file_path = [tmp_path / ZIP_FILE_NAME]
         assert result == expected_zipped_file_path
 
-    def test_resolve_files_with_multiple_files_and_no_zip_files(self, tmp_path, multiple_file_paths, example_file_names):
+    def test_resolve_files_with_multiple_files_and_no_zip_files(self, tmp_path, example_file_paths, example_file_names):
         file_handler = FileHandler(tmp_path, zip_files=False)
-        result = file_handler.resolve_files(multiple_file_paths)
+        result = file_handler.resolve_files(example_file_paths)
 
         expected_list_of_file_paths = list(map(lambda p: tmp_path / p, example_file_names))
         assert result == expected_list_of_file_paths
 
-    def test_resolve_files_with_empty_folder_and_zip_files(self, tmp_path, create_empty_folder, empty_folder_name):
+    def test_resolve_files_with_empty_folder_and_zip_files(self, tmp_path, empty_folder_path):
         file_handler = FileHandler(tmp_path)
-        result = file_handler.resolve_files([tmp_path / empty_folder_name])
+        result = file_handler.resolve_files([empty_folder_path])
 
         expected_zipped_file_path = [tmp_path / ZIP_FILE_NAME]
         assert result == expected_zipped_file_path
@@ -59,6 +59,6 @@ class TestFileHandler(object):
         count_before_delete = len(os_listdir(tmp_path))
         file_handler_with_resolved_files.delete_files()
         count_after_delete = len(os_listdir(tmp_path))
-
+        
         assert count_before_delete == len(example_file_names) + 1
         assert count_after_delete == 1

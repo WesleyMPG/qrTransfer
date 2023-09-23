@@ -34,7 +34,7 @@
 
 {% block content %}
     <div class="list">
-        <button class="btn" onclick="downloadAll()">Download All</button>
+        <button id="download" class="btn" onclick="downloadAll()">Download All</button>
     {% for file in files %}
         <a class="list-item" href="{{ file }}">{{ file }}</a>
     {% endfor %}
@@ -48,7 +48,7 @@
             for (let i = 0; i < links.length; i++) {
                 setTimeout(() => {
                     links[i].click();
-                }, i * 100);
+                }, i * 200);
             }
         }
     </script>

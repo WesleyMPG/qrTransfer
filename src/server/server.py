@@ -64,7 +64,7 @@ def download(path):
     """
     log.debug(f'download - File: {path}.')
     return send_file(f'{Path(STATIC_FOLDER).joinpath(path)}',
-                     attachment_filename=f'{path}',
+                     download_name=f'{path}',
                      as_attachment=True,
     )
     

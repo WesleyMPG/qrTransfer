@@ -42,7 +42,7 @@ class QrTransfer(object):
     @staticmethod
     def __on_close(uploader):
         def tmp():
-            uploader.remove_file_copies
+            uploader.remove_file_copies()
             config_handler.save_config()
         return tmp
         

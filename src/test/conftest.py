@@ -1,4 +1,4 @@
-import sys, os, signal
+import sys
 from pathlib import Path
 import pytest
 
@@ -17,6 +17,7 @@ UPLOAD_FOLDER = Path(config.get('directories', 'UPLOAD_FOLDER'))
 @pytest.fixture
 def firefox_options(firefox_options):
     firefox_options.add_argument('-headless')
+    firefox_options.set_preference("browser.download.dir", str(UPLOAD_FOLDER))
     return firefox_options
 
 
@@ -38,19 +39,26 @@ def upload_folder() -> Path:
 
 
 @pytest.fixture
-def example_file_names() -> list[str]:
-    return ['simple_file.txt', 'simple_file2.txt', 'simple_file3.txt',]
-
-
-@pytest.fixture
 def empty_folder_name() -> str:
     return 'empty_folder'
 
 
 @pytest.fixture
-def create_empty_folder(tmp_path, empty_folder_name):
-    ed = tmp_path / empty_folder_name
+def empty_folder_path(tmp_path: Path, empty_folder_name) -> Path:
+    ed: Path = tmp_path / empty_folder_name
     ed.mkdir()
+    yield ed
+    ed.rmdir()
+
+
+@pytest.fixture
+def example_file_names() -> list[str]:
+    return ['simple_file.txt', 'simple_file2.txt', 'simple_file3.txt',]
+
+
+@pytest.fixture
+def example_file_name(example_file_names):
+    return example_file_names[0]
 
 
 @pytest.fixture
@@ -59,14 +67,11 @@ def example_file_path(shared_datadir, example_file_names) -> Path:
 
 
 @pytest.fixture
-def multiple_file_paths(shared_datadir, example_file_names) -> list[Path]:
+def example_file_paths(shared_datadir, example_file_names) -> list[Path]:
     paths = map(lambda p: shared_datadir / p, example_file_names)
     return list(paths)
 
 
-@pytest.fixture
-def example_file_name(example_file_names):
-    return example_file_names[0]
 
 
 @pytest.fixture

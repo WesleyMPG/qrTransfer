@@ -13,16 +13,16 @@ class TestUploader(object):
 
         assert link_last_segment == example_file_name
 
-    def test_with_multiple_files_and_enabled_zip_generates_link_to_zip(self, multiple_file_paths, enable_zip_file):
+    def test_with_multiple_files_and_enabled_zip_generates_link_to_zip(self, example_file_paths, enable_zip_file):
         uploader = UploaderFactory.get_uploader()
-        link = uploader.upload_files(multiple_file_paths)
+        link = uploader.upload_files(example_file_paths)
         result = re.match(r'.*/download/.*(\.zip)/?$', link)
 
         assert result != None  # should match FILE.zip
 
-    def test_with_multiple_files_and_disabled_zip_generates_link_to_download_foder(self, multiple_file_paths, disable_zip_file):
+    def test_with_multiple_files_and_disabled_zip_generates_link_to_download_foder(self, example_file_paths, disable_zip_file):
         uploader = UploaderFactory.get_uploader()
-        link = uploader.upload_files(multiple_file_paths)
+        link = uploader.upload_files(example_file_paths)
         result = re.match(r'.*/download/?$', link)
 
         assert result != None  # should match /download/
