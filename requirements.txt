@@ -1,7 +1,7 @@
 qrcode==7.3
-requests==2.26.0
-flask==2.0.1
-pillow==9.0.1
+requests==2.31.0
+flask==2.2.5
+pillow==10.0.1
 kivy
 kivymd==1.1.1
 pytest==7.4.2

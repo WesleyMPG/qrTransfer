@@ -5,7 +5,7 @@ import pytest
 src = Path(__file__).parent.parent
 sys.path.append(str(src))
 
-from server import Server
+from server import Server, UploaderFactory
 from utils import config
 
 
@@ -36,6 +36,13 @@ def server():
 @pytest.fixture
 def upload_folder() -> Path:
     return UPLOAD_FOLDER
+
+
+@pytest.fixture
+def uploader():
+    u = UploaderFactory.get_uploader()
+    yield u
+    u.remove_file_copies()
 
 
 @pytest.fixture
@@ -70,8 +77,6 @@ def example_file_path(shared_datadir, example_file_names) -> Path:
 def example_file_paths(shared_datadir, example_file_names) -> list[Path]:
     paths = map(lambda p: shared_datadir / p, example_file_names)
     return list(paths)
-
-
 
 
 @pytest.fixture

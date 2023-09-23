@@ -5,8 +5,6 @@ import pytest
 from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.common.by import By
 
-from server import UploaderFactory
-
 
 @pytest.fixture
 def driver_upload_page(selenium: WebDriver, base_url: str) -> WebDriver:
@@ -37,13 +35,6 @@ def file_button(driver_upload_page: WebDriver):
 @pytest.fixture
 def upload_button(driver_upload_page: WebDriver):
     return driver_upload_page.find_element(By.ID, 'submit')
-
-
-@pytest.fixture
-def uploader():
-    u = UploaderFactory.get_uploader()
-    yield u
-    u.remove_file_copies()
 
 
 @pytest.fixture
