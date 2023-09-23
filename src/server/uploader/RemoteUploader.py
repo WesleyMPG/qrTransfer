@@ -4,8 +4,8 @@ from .AbstractUploader import AbstractUploader
 
 class RemoteUploader(AbstractUploader):
 
-    def __init__(self):
-        super().__init__(logging.getLogger(f'Main.{__name__}'))
+    def __init__(self, file_handler):
+        super().__init__(file_handler, logging.getLogger(f'Main.{__name__}'))
             
     def _get_link(self, path_list):
         path = self.__fhandler.resolve_files(path_list)

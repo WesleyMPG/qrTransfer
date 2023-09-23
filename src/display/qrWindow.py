@@ -1,5 +1,6 @@
 import os
 os.environ['KIVY_NO_ARGS'] = '1'
+from io import BytesIO
 from kivymd.app import MDApp
 from kivy.lang import Builder
 from kivy.uix.widget import Widget
@@ -9,10 +10,8 @@ from kivymd.uix.menu import MDDropdownMenu
 from kivymd.uix.boxlayout import MDBoxLayout
 from kivy.properties import BooleanProperty, StringProperty
 from kivymd.uix.list import IRightBodyTouch, OneLineAvatarIconListItem
-from io import BytesIO
-from utils import ROOT_DIR, config
 from PIL import Image
-
+from utils import ROOT_DIR, config
 from .menu_items import settings_items
 
 

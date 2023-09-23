@@ -62,8 +62,8 @@ class ConfigHandler(object):
         upload = Path(dirs["UPLOAD_FOLDER"])
         log.debug(f'folders - Upload folder: {upload}.')
         if not upload.is_dir():
-            log.error(f'Upload folder doesn\'t exists.')
-            sys.exit(1)
+            upload.mkdir(parents=True)
+            log.info(f'Upload folder created at {upload}')
 
     def __assert_network(self):
         ntw = self._config['network']

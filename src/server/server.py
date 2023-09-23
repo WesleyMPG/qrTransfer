@@ -1,20 +1,20 @@
-import os, logging
+import os, logging, signal
+from time import sleep
 from pathlib import Path
 import requests as req
 from threading import Thread
-from werkzeug.utils import secure_filename
-from flask import Flask, request, send_file, redirect, flash, render_template
+from flask import Flask, request, send_file, redirect, render_template
 from utils import config
-from .helpers import list_files_to_download
+from .helpers import list_files_to_download, were_files_selected, save_files
 
 
 __all__ = ['Server']
 
 log = logging.getLogger(f'Main.{__name__}')
 
-STATIC_FOLDER = config['directories']['STATIC_FOLDER']
-UPLOAD_FOLDER = config['directories']['UPLOAD_FOLDER']
-PORT = config['network']['PORT']
+STATIC_FOLDER = config.get('directories', 'STATIC_FOLDER')
+PORT = config.get('network', 'PORT')
+SHUTDOWN_WAIT_TIME = 2
 
 app = Flask(__name__, static_folder=STATIC_FOLDER)
 app.secret_key = os.urandom(16).hex()
@@ -23,6 +23,18 @@ app.secret_key = os.urandom(16).hex()
 @app.route('/status-check/')
 def hello_world():
     return 'working'
+
+
+@app.route('/test_shutdown/')
+def trigger_sutdown():
+    st = Thread(target=shutdown, args=[os.getpid()], daemon=True)
+    st.start()
+    return f"<h1>This route is meant for testing purposes. Shutting down in {SHUTDOWN_WAIT_TIME} seconds</h1>"
+    
+
+def shutdown(pid):
+    sleep(SHUTDOWN_WAIT_TIME)
+    os.kill(pid, signal.SIGSTOP)
 
 
 @app.get('/download/')
@@ -52,7 +64,7 @@ def download(path):
     """
     log.debug(f'download - File: {path}.')
     return send_file(f'{Path(STATIC_FOLDER).joinpath(path)}',
-                     attachment_filename=f'{path}',
+                     download_name=f'{path}',
                      as_attachment=True,
     )
     
@@ -64,24 +76,16 @@ def upload():
     Returns:
         Upload page.
     """
-    if request.method == 'POST':
-        if 'file' not in request.files:
-            return redirect(request.url)
-        files = request.files.getlist('file')
-        if files[0].filename == '':
-            #flash('No selected file.')
-            log.error('upload - No selected file.')
-            return redirect(request.url)
-        if files:
-            for file in files:
-                filename = secure_filename(file.filename)
-                folder = UPLOAD_FOLDER
-                save_path = os.path.join(folder, filename)
-                file.save(save_path)
-                log.info(f'upload - saved at {save_path}.')
-            return render_template('upload.html', mode='done')
+    if request.method == 'GET':
+        return render_template('upload.html', mode='pick')
 
-    return render_template('upload.html', mode='pick')
+    if 'file' not in request.files:
+        return redirect(request.url)
+    files = request.files.getlist('file')
+    if not were_files_selected(files):
+        return
+    save_files(files)
+    return render_template('upload.html', mode='done')
 
 
 class Server(object):
@@ -111,6 +115,13 @@ class Server(object):
             return True
         except req.exceptions.ConnectionError:
             return False
+
+    @staticmethod
+    def stop():
+        try:
+            req.get(f'http://localhost:{PORT}/test_shutdown/')
+        except req.exceptions.ConnectionError:
+            pass
 
 
 if __name__ == "__main__":

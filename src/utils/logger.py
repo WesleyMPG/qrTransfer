@@ -1,5 +1,6 @@
 import logging, logging.handlers
-from utils import get_logs_dir, args
+from .functions import get_logs_dir
+from .cli import args
 
 # Create main logger
 logger = logging.getLogger('Main')
