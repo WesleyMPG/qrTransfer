@@ -6,12 +6,12 @@ src = Path(__file__).parent.parent
 sys.path.append(str(src))
 
 from server import Server, UploaderFactory
-from utils import config
+from utils import config, ConfigName
 
 
 PORT = config.get('network', 'PORT')
 BASE_URL = f'http://localhost:{PORT}'
-UPLOAD_FOLDER = Path(config.get('directories', 'UPLOAD_FOLDER'))
+UPLOAD_FOLDER = Path(config.get(ConfigName.DIRECTORIES, ConfigName.UPLOAD_FOLDER))
 
 
 @pytest.fixture

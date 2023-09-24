@@ -11,7 +11,7 @@ from kivymd.uix.boxlayout import MDBoxLayout
 from kivy.properties import BooleanProperty, StringProperty
 from kivymd.uix.list import IRightBodyTouch, OneLineAvatarIconListItem
 from PIL import Image
-from utils import ROOT_DIR, config
+from utils import ROOT_DIR, config, ConfigName
 from .menu_items import settings_items
 
 
@@ -48,11 +48,11 @@ class RightContentCls(IRightBodyTouch, MDBoxLayout):
 
 class ListCheckBoxItem(OneLineAvatarIconListItem):
     left_icon = StringProperty()
-    active = BooleanProperty(config.getboolean('saving', 'ZIP_FILES'))
+    active = BooleanProperty(config.getboolean(ConfigName.SAVING, ConfigName.ZIP_FILES))
         
     def on_toggle(self, instance, value):
         self.active = not self.active
-        config.set('saving', 'ZIP_FILES', str(self.active))
+        config.set(ConfigName.SAVING, ConfigName.ZIP_FILES, str(self.active))
 
 
 class QrApp(MDApp):

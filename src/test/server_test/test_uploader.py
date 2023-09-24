@@ -1,7 +1,7 @@
 import re
 import pytest
 from server import UploaderFactory
-from utils import config
+from utils import config, ConfigName
 
 
 class TestUploader(object):
@@ -15,7 +15,7 @@ class TestUploader(object):
     def test_generated_link_with_settings_defined_port(self, uploader, example_file_path):
         link = uploader.upload_files([example_file_path])
         port = re.match(r'.*:(\d{4})/', link).group(1)
-        expected = config.get('network', 'PORT')
+        expected = config.get(ConfigName.NETWORK, ConfigName.PORT)
 
         assert port == expected
 
