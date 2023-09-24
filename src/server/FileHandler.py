@@ -16,7 +16,7 @@ class FileHandler(object):
         self._out_dir = static_folder
         self._zip_out = static_folder.joinpath(ZIP_FILE_NAME)
         self._zip_files = zip_files
-        self._deletion_list = []
+        self._deletion_list: list[Path] = []
     
     def resolve_files(self, path_list : [Path]):
         """Generates the path or path list for the copied files.
@@ -95,5 +95,6 @@ class FileHandler(object):
         """Deletes all files copied or created.
         """
         for f in self._deletion_list:
+            if not f.is_file(): continue
             log.debug(f'delete - {f}.')
             remove(f)

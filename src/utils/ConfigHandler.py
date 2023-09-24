@@ -36,7 +36,7 @@ class ConfigHandler(object):
     def __assert_structure(self):
         structure = {
             'directories': ['STATIC_FOLDER', 'UPLOAD_FOLDER'],
-            'network': ['PORT'],
+            'network': ['PORT', 'RANDOM_PORT'],
             'saving': ['ZIP_FILES'],
         }
         for s in structure.keys():
@@ -72,6 +72,9 @@ class ConfigHandler(object):
         if not ntw['PORT'].isdecimal():
             log.warning('Invalid port value. Setting default...')
             ntw['PORT'] = '5000'
+        if not ntw['RANDOM_PORT'] in ['True', 'False']:
+            log.warning('Invalid value for for RANDOM_PORT config.')
+            ntw['RANDOM_PORT'] = 'False'
         
     def _load_file(self):
         log.info("Loading config file.")
