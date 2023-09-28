@@ -69,16 +69,25 @@
                     text: 'Zip files'
                 Switch:
                     id: zip
-                    active: False
                     on_active: root.on_toggle_zip(self.active)
             BoxLayout:
                 orientation: 'horizontal'
                 spacing: '20dp'
                 Label:
-                    text: 'Random Port'
+                    text: 'Randomize Port'
                 Switch:
-                    id: port
-                    active: False
+                    id: random_port
+                    on_active: root.on_toggle_random_port(self.active)
+            BoxLayout:
+                spacing: '20dp'
+                padding: [0, 0, dp(20), dp(20)]
+                Label:
+                    text: 'Port'
+                BoxLayout:
+                    padding: ['40dp', 0]
+                    TextInput:
+                        input_filter: 'int'
+                        font_size: self.height - dp(14)
             BoxLayout:
                 orientation: 'horizontal'
                 spacing: '40dp'
@@ -91,3 +100,7 @@
                 Button:
                     text: 'Save'
                     on_release: root.on_save()
+
+
+<PortInput>:
+    multiline: False

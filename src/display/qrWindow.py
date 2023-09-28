@@ -2,15 +2,12 @@ import os
 os.environ['KIVY_NO_ARGS'] = '1'
 from kivymd.app import MDApp
 from kivy.lang import Builder
-from kivy.uix.widget import Widget
 from kivy.uix.screenmanager import ScreenManager, Screen
+from kivy.uix.textinput import TextInput
 from kivy.core.window import Window
-from kivy.properties import BooleanProperty, StringProperty
-from kivymd.uix.list import OneLineAvatarIconListItem
 from PIL import Image
 from utils import ROOT_DIR, config, ConfigName, config_handler
 from .helper import pillImg_to_texture
-from .menu_items import settings_items
 
 
 Window.size = (400, 500)
@@ -35,35 +32,46 @@ class SettingsScreen(Screen):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self._state = {}
-        self.load_config_onto_state()
+        self.load_config()
 
     def load_config(self):
-        self.__load_config_onto_state()
-        self.__load_state_onto_ui()
+        self.__load_config_on_state()
+        self.__load_state_on_ui()
 
-    def __load_config_onto_state(self):
-        self._state['zip'] = config.getboolean(ConfigName.SAVING, ConfigName.ZIP_FILES)
+    def __load_config_on_state(self):
+        self._state['zip?'] = config.getboolean(ConfigName.SAVING, ConfigName.ZIP_FILES)
+        self._state['random_port?'] = config.getboolean(ConfigName.NETWORK, ConfigName.RANDOM_PORT)
+        self._state['port'] = config.get(ConfigName.NETWORK, ConfigName.PORT)
 
-    def __load_state_onto_ui(self):
-        self.ids.zip.active = self._state['zip']
+    def __load_state_on_ui(self):
+        self.ids.zip.active = self._state['zip?']
+        self.ids.random_port.active = self._state['random_port?']
 
     def on_toggle_zip(self, value):
-        config.set(ConfigName.SAVING, ConfigName.ZIP_FILES, str(value))
+        self._state['zip?'] = value
+    
+    def on_toggle_random_port(self, value):
+        self._state['random_port?'] = value
 
     def on_save(self):
+        self.__write_state_on_config()
         config_handler.save_config()
         self.go_back()
+
+    def __write_state_on_config(self):
+        config.set(ConfigName.SAVING, ConfigName.ZIP_FILES, str(self._state['zip?']))
+        config.set(ConfigName.NETWORK, ConfigName.RANDOM_PORT, str(self._state['random_port?']))
 
     def go_back(self):
         self.manager.transition.direction = 'right'
         self.manager.current = 'qrframe'
 
 
-class SettingsMenuCheckBoxItem(OneLineAvatarIconListItem):
-    name = StringProperty()
-    left_icon = StringProperty()
-    active = BooleanProperty(config.getboolean(ConfigName.SAVING, ConfigName.ZIP_FILES))
-        
+class PortInput(TextInput):
+    @staticmethod
+    def on_text(instance, value: str):
+        print(value)
+        instance.text = value.upper()
 
 
 class QrApp(MDApp):
