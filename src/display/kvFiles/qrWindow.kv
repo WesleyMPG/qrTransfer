@@ -42,10 +42,6 @@
             Rectangle:
                 pos: self.pos
                 size: self.size
-        Button:
-            text: '---'
-            size_hint: .1, .1
-            pos_hint: {'x': .0, 'y': .1}
         StackLayout:
             size_hint: .8, None
             height: '50dp'
@@ -74,6 +70,7 @@
                 Switch:
                     id: zip
                     active: False
+                    on_active: root.on_toggle_zip(self.active)
             BoxLayout:
                 orientation: 'horizontal'
                 spacing: '20dp'
@@ -89,7 +86,8 @@
                 Button:
                     text: 'Cancel'
                     on_release:
-                        root.manager.transition.direction = 'right'
-                        root.manager.current = 'qrframe'
+                        root.load_config()
+                        root.go_back()
                 Button:
                     text: 'Save'
+                    on_release: root.on_save()

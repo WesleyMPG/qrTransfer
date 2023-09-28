@@ -8,7 +8,7 @@ from kivy.core.window import Window
 from kivy.properties import BooleanProperty, StringProperty
 from kivymd.uix.list import OneLineAvatarIconListItem
 from PIL import Image
-from utils import ROOT_DIR, config, ConfigName
+from utils import ROOT_DIR, config, ConfigName, config_handler
 from .helper import pillImg_to_texture
 from .menu_items import settings_items
 
@@ -31,7 +31,32 @@ class QrFrameScreen(Screen):
 
 
 class SettingsScreen(Screen):
-    pass
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._state = {}
+        self.load_config_onto_state()
+
+    def load_config(self):
+        self.__load_config_onto_state()
+        self.__load_state_onto_ui()
+
+    def __load_config_onto_state(self):
+        self._state['zip'] = config.getboolean(ConfigName.SAVING, ConfigName.ZIP_FILES)
+
+    def __load_state_onto_ui(self):
+        self.ids.zip.active = self._state['zip']
+
+    def on_toggle_zip(self, value):
+        config.set(ConfigName.SAVING, ConfigName.ZIP_FILES, str(value))
+
+    def on_save(self):
+        config_handler.save_config()
+        self.go_back()
+
+    def go_back(self):
+        self.manager.transition.direction = 'right'
+        self.manager.current = 'qrframe'
 
 
 class SettingsMenuCheckBoxItem(OneLineAvatarIconListItem):
@@ -39,9 +64,6 @@ class SettingsMenuCheckBoxItem(OneLineAvatarIconListItem):
     left_icon = StringProperty()
     active = BooleanProperty(config.getboolean(ConfigName.SAVING, ConfigName.ZIP_FILES))
         
-    def on_toggle(self, instance, value):
-        self.active = not self.active
-        config.set(ConfigName.SAVING, ConfigName.ZIP_FILES, str(self.active))
 
 
 class QrApp(MDApp):
@@ -49,6 +71,7 @@ class QrApp(MDApp):
         super(QrApp, self).__init__(**kwargs)
         self._code = code
         self._sm = ScreenManager()
+        self.title = 'QrTransfer'
         
 
     def build(self):

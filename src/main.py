@@ -49,7 +49,7 @@ class QrTransfer(object):
     def __start_mobile_to_pc_mode(self):
         from display import qr_window
         code = self.__generate_mobile_to_pc_code()
-        qr_window(code, at_close=config_handler.save_config)
+        qr_window(code)
 
     def __generate_mobile_to_pc_code(self):
         ip = get_local_network_ip()
