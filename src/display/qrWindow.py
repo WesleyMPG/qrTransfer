@@ -46,12 +46,18 @@ class SettingsScreen(Screen):
     def __load_state_on_ui(self):
         self.ids.zip.active = self._state['zip?']
         self.ids.random_port.active = self._state['random_port?']
+        self.ids.port.text = self._state['port']
 
     def on_toggle_zip(self, value):
         self._state['zip?'] = value
     
     def on_toggle_random_port(self, value):
         self._state['random_port?'] = value
+        self.ids.port.disabled = value
+
+    def update_port_state(self, port_input, focus_value):
+        if not focus_value:
+            self._state['port'] = port_input.text
 
     def on_save(self):
         self.__write_state_on_config()
@@ -61,6 +67,7 @@ class SettingsScreen(Screen):
     def __write_state_on_config(self):
         config.set(ConfigName.SAVING, ConfigName.ZIP_FILES, str(self._state['zip?']))
         config.set(ConfigName.NETWORK, ConfigName.RANDOM_PORT, str(self._state['random_port?']))
+        config.set(ConfigName.NETWORK, ConfigName.PORT, str(self._state['port']))
 
     def go_back(self):
         self.manager.transition.direction = 'right'
@@ -68,10 +75,9 @@ class SettingsScreen(Screen):
 
 
 class PortInput(TextInput):
-    @staticmethod
-    def on_text(instance, value: str):
-        print(value)
-        instance.text = value.upper()
+    def on_text_change(self, value: str):
+        if len(value) > 5:
+            self.text = value[:5]
 
 
 class QrApp(MDApp):

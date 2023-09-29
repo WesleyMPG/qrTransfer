@@ -64,30 +64,26 @@
                         width: 1
             BoxLayout:
                 orientation: 'horizontal'
-                spacing: '20dp'
-                Label:
+                SLabel:
                     text: 'Zip files'
                 Switch:
                     id: zip
                     on_active: root.on_toggle_zip(self.active)
             BoxLayout:
                 orientation: 'horizontal'
-                spacing: '20dp'
-                Label:
+                SLabel:
                     text: 'Randomize Port'
                 Switch:
                     id: random_port
                     on_active: root.on_toggle_random_port(self.active)
             BoxLayout:
-                spacing: '20dp'
-                padding: [0, 0, dp(20), dp(20)]
-                Label:
+                SLabel:
                     text: 'Port'
                 BoxLayout:
-                    padding: ['40dp', 0]
-                    TextInput:
-                        input_filter: 'int'
-                        font_size: self.height - dp(14)
+                    padding: ['40dp', '8dp', '40dp', '12dp']
+                    PortInput:
+                        id: port
+                        on_focus: root.update_port_state(self, self.focus)
             BoxLayout:
                 orientation: 'horizontal'
                 spacing: '40dp'
@@ -102,5 +98,10 @@
                     on_release: root.on_save()
 
 
+<SLabel@Label>:
+    text_size: dp(120), None
+    font_size: '15sp'
+
 <PortInput>:
-    multiline: False
+    input_filter: 'int'
+    on_text: self.on_text_change(self.text)
