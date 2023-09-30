@@ -1,7 +1,7 @@
 import logging
-from random import randint
 from utils import get_local_network_ip, config, ConfigName
 from .AbstractUploader import AbstractUploader
+from .helpers import PortProvider
 
 
 class LocalUploader(AbstractUploader):
@@ -14,7 +14,7 @@ class LocalUploader(AbstractUploader):
     def _get_port(self):
         if not self._randomize_port:
             return config.get(ConfigName.NETWORK, ConfigName.PORT)
-        return randint(5001, 9999)
+        return PortProvider().get_random_port()
             
     def _get_link(self, path_list):
         self._uploaded_files = self._fhandler.resolve_files(path_list)
