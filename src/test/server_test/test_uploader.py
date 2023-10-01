@@ -1,21 +1,21 @@
 import re
 import pytest
 from server import UploaderFactory
-from utils import config, ConfigName
+from utils import config_obj, ConfigName
 
 
 class TestUploader(object):
 
     @pytest.fixture
     def enable_random_port(self):
-        config.set('network', 'RANDOM_PORT', 'True')
+        config_obj.set('network', 'RANDOM_PORT', 'True')
         yield
-        config.set('network', 'RANDOM_PORT', 'False')
+        config_obj.set('network', 'RANDOM_PORT', 'False')
 
     def test_generated_link_with_settings_defined_port(self, uploader, example_file_path):
         link = uploader.upload_files([example_file_path])
         port = re.match(r'.*:(\d{4})/', link).group(1)
-        expected = config.get(ConfigName.NETWORK, ConfigName.PORT)
+        expected = config_obj.get(ConfigName.NETWORK, ConfigName.PORT)
 
         assert port == expected
 

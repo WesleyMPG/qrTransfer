@@ -1,14 +1,14 @@
 import qrcode as qr
 from time import sleep
 from server import Server, UploaderFactory
-from utils import get_local_network_ip, config, logger
+from utils import get_local_network_ip, config_obj, logger
 from utils.cli import args
 from PIL import Image as PIL_Image
 from utils import config_handler
 
 
 class QrTransfer(object):
-    PORT = config['network']['PORT']
+    PORT = config_obj['network']['PORT']
 
     def __init__(self):
         self.__qrCode_params = {

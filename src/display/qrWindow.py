@@ -6,7 +6,7 @@ from kivy.uix.screenmanager import ScreenManager, Screen
 from kivy.uix.textinput import TextInput
 from kivy.core.window import Window
 from PIL import Image
-from utils import ROOT_DIR, config, ConfigName, config_handler
+from utils import ROOT_DIR, config_obj, ConfigName, config_handler
 from .helper import pillImg_to_texture
 
 
@@ -39,9 +39,9 @@ class SettingsScreen(Screen):
         self.__load_state_on_ui()
 
     def __load_config_on_state(self):
-        self._state['zip?'] = config.getboolean(ConfigName.SAVING, ConfigName.ZIP_FILES)
-        self._state['random_port?'] = config.getboolean(ConfigName.NETWORK, ConfigName.RANDOM_PORT)
-        self._state['port'] = config.get(ConfigName.NETWORK, ConfigName.PORT)
+        self._state['zip?'] = config_obj.getboolean(ConfigName.SAVING, ConfigName.ZIP_FILES)
+        self._state['random_port?'] = config_obj.getboolean(ConfigName.NETWORK, ConfigName.RANDOM_PORT)
+        self._state['port'] = config_obj.get(ConfigName.NETWORK, ConfigName.PORT)
 
     def __load_state_on_ui(self):
         self.ids.zip.active = self._state['zip?']
@@ -65,9 +65,9 @@ class SettingsScreen(Screen):
         self.go_back()
 
     def __write_state_on_config(self):
-        config.set(ConfigName.SAVING, ConfigName.ZIP_FILES, str(self._state['zip?']))
-        config.set(ConfigName.NETWORK, ConfigName.RANDOM_PORT, str(self._state['random_port?']))
-        config.set(ConfigName.NETWORK, ConfigName.PORT, str(self._state['port']))
+        config_obj.set(ConfigName.SAVING, ConfigName.ZIP_FILES, str(self._state['zip?']))
+        config_obj.set(ConfigName.NETWORK, ConfigName.RANDOM_PORT, str(self._state['random_port?']))
+        config_obj.set(ConfigName.NETWORK, ConfigName.PORT, str(self._state['port']))
 
     def go_back(self):
         self.manager.transition.direction = 'right'
