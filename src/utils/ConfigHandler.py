@@ -1,5 +1,6 @@
 import logging, configparser, sys
 from pathlib import Path
+from .constants import ConfigName
 from utils import get_program_dir
 
 __all__ = ['config']
@@ -34,44 +35,42 @@ class ConfigHandler(object):
         self.__assert_network()
 
     def __assert_structure(self):
-        structure = {
-            'directories': ['STATIC_FOLDER', 'UPLOAD_FOLDER'],
-            'network': ['PORT'],
-            'saving': ['ZIP_FILES'],
-        }
-        for s in structure.keys():
+        for s in ConfigName.STRUCTURE.keys():
             if s not in self._config.sections():
                 log.error(f'"{s}" section missing at config file.')
                 sys.exit(1)
-            for i in structure[s]:
+            for i in ConfigName.STRUCTURE[s]:
                 if i not in self._config[s]:
                     log.error(f'"{i}" missing at "{s}" config.')
                     sys.exit(1)
 
     def __assert_folders(self): 
-        dirs = self._config['directories']
+        dirs = self._config[ConfigName.DIRECTORIES]
         for k in dirs.keys():
             dirs[k] = str(Path(dirs[k]).absolute())
 
-        static = Path(dirs["STATIC_FOLDER"])
+        static = Path(dirs[ConfigName.STATIC_FOLDER])
         log.debug(f'folders - Static folder: {static}.')
         if not static.is_dir(): 
             log.warning(f"Static folder doesn't exists. Creating it...")
             static.mkdir()
 
-        upload = Path(dirs["UPLOAD_FOLDER"])
+        upload = Path(dirs[ConfigName.UPLOAD_FOLDER])
         log.debug(f'folders - Upload folder: {upload}.')
         if not upload.is_dir():
             upload.mkdir(parents=True)
             log.info(f'Upload folder created at {upload}')
 
     def __assert_network(self):
-        ntw = self._config['network']
+        ntw = self._config[ConfigName.NETWORK]
 
         log.debug(f'network - Port: {ntw["PORT"]}')
-        if not ntw['PORT'].isdecimal():
+        if not ntw[ConfigName.PORT].isdecimal():
             log.warning('Invalid port value. Setting default...')
-            ntw['PORT'] = '5000'
+            ntw[ConfigName.PORT] = '5000'
+        if not ntw[ConfigName.RANDOM_PORT] in ['True', 'False']:
+            log.warning('Invalid value for for RANDOM_PORT config.')
+            ntw[ConfigName.RANDOM_PORT] = 'False'
         
     def _load_file(self):
         log.info("Loading config file.")

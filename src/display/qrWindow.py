@@ -1,18 +1,13 @@
 import os
 os.environ['KIVY_NO_ARGS'] = '1'
-from io import BytesIO
 from kivymd.app import MDApp
 from kivy.lang import Builder
-from kivy.uix.widget import Widget
+from kivy.uix.screenmanager import ScreenManager, Screen
+from kivy.uix.textinput import TextInput
 from kivy.core.window import Window
-from kivy.core.image import Image as CoreImage
-from kivymd.uix.menu import MDDropdownMenu
-from kivymd.uix.boxlayout import MDBoxLayout
-from kivy.properties import BooleanProperty, StringProperty
-from kivymd.uix.list import IRightBodyTouch, OneLineAvatarIconListItem
 from PIL import Image
-from utils import ROOT_DIR, config
-from .menu_items import settings_items
+from utils import ROOT_DIR, config, ConfigName, config_handler
+from .helper import pillImg_to_texture
 
 
 Window.size = (400, 500)
@@ -21,53 +16,91 @@ kv_file = DISPLAY_DIR.joinpath('kvFiles', 'qrWindow.kv')
 
 Builder.load_file(str(kv_file))
 
-def pillImg_to_texture(img):
-    """Converts a PIL.Image into a kivy texture
-    """
-    img = img.resize((400, 400))
-    data = BytesIO()
-    img.save(data, format='png')
-    data.seek(0)
-    kimg_data = BytesIO(data.read())
-    return CoreImage(kimg_data, ext='png').texture
 
-
-class QrFrame(Widget):
+class QrFrameScreen(Screen):
     """Container for the qrCode image
     """
     def __init__(self, code, **kwargs):
-        super(QrFrame, self).__init__(**kwargs)
+        super(QrFrameScreen, self).__init__(**kwargs)
         self.ids.txt.text = "DON'T close this window\n"+ \
                             "until download complete"
         self.ids.img.texture = pillImg_to_texture(code)
 
 
-class RightContentCls(IRightBodyTouch, MDBoxLayout):
-    pass
+class SettingsScreen(Screen):
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._state = {}
+        self.load_config()
+
+    def load_config(self):
+        self.__load_config_on_state()
+        self.__load_state_on_ui()
+
+    def __load_config_on_state(self):
+        self._state['zip?'] = config.getboolean(ConfigName.SAVING, ConfigName.ZIP_FILES)
+        self._state['random_port?'] = config.getboolean(ConfigName.NETWORK, ConfigName.RANDOM_PORT)
+        self._state['port'] = config.get(ConfigName.NETWORK, ConfigName.PORT)
+
+    def __load_state_on_ui(self):
+        self.ids.zip.active = self._state['zip?']
+        self.ids.random_port.active = self._state['random_port?']
+        self.ids.port.text = self._state['port']
+
+    def on_toggle_zip(self, value):
+        self._state['zip?'] = value
+    
+    def on_toggle_random_port(self, value):
+        self._state['random_port?'] = value
+        self.ids.port.disabled = value
+
+    def update_port_state(self, port_input, focus_value):
+        if not focus_value:
+            self._state['port'] = port_input.text
+
+    def on_save(self):
+        self.__write_state_on_config()
+        config_handler.save_config()
+        self.go_back()
+
+    def __write_state_on_config(self):
+        config.set(ConfigName.SAVING, ConfigName.ZIP_FILES, str(self._state['zip?']))
+        config.set(ConfigName.NETWORK, ConfigName.RANDOM_PORT, str(self._state['random_port?']))
+        config.set(ConfigName.NETWORK, ConfigName.PORT, str(self._state['port']))
+
+    def go_back(self):
+        self.manager.transition.direction = 'right'
+        self.manager.current = 'qrframe'
 
 
-class ListCheckBoxItem(OneLineAvatarIconListItem):
-    left_icon = StringProperty()
-    active = BooleanProperty(config.getboolean('saving', 'ZIP_FILES'))
-        
-    def on_toggle(self, instance, value):
-        self.active = not self.active
-        config.set('saving', 'ZIP_FILES', str(self.active))
+class PortInput(TextInput):
+    def on_text_change(self, value: str):
+        if len(value) > 5:
+            self.text = value[:5]
 
 
 class QrApp(MDApp):
     def __init__(self, code, **kwargs):
         super(QrApp, self).__init__(**kwargs)
         self._code = code
-        self.qrFrame = QrFrame(self._code)
-        self.menu = MDDropdownMenu(caller=self.qrFrame.ids.config_btn, items=settings_items, width_mult=4,)
-
+        self._sm = ScreenManager()
+        self.title = 'QrTransfer'
+        
 
     def build(self):
         Window.clearcolor = (.1, .1, .1, 1)
+        self.__setup_icon()
+        self.__add_screens()
+        return self._sm
+    
+    def __setup_icon(self):
         p = ROOT_DIR.joinpath('resources', 'icon.png')
         self.icon = str(p)
-        return self.qrFrame
+
+    def __add_screens(self):
+        self._sm.add_widget(SettingsScreen(name='settings'))
+        self._sm.add_widget(QrFrameScreen(self._code, name='qrframe'))
 
 
 def qr_window(code, at_close=None):

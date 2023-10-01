@@ -4,7 +4,7 @@ from pathlib import Path
 import requests as req
 from threading import Thread
 from flask import Flask, request, send_file, redirect, render_template
-from utils import config
+from utils import config, ConfigName
 from .helpers import list_files_to_download, were_files_selected, save_files
 
 
@@ -12,8 +12,8 @@ __all__ = ['Server']
 
 log = logging.getLogger(f'Main.{__name__}')
 
-STATIC_FOLDER = config.get('directories', 'STATIC_FOLDER')
-PORT = config.get('network', 'PORT')
+STATIC_FOLDER = config.get(ConfigName.DIRECTORIES, ConfigName.STATIC_FOLDER)
+PORT = config.get(ConfigName.NETWORK, ConfigName.PORT)
 SHUTDOWN_WAIT_TIME = 2
 
 app = Flask(__name__, static_folder=STATIC_FOLDER)
