@@ -1,6 +1,6 @@
 import os
 from configparser import ConfigParser
-from .names import *
+from .constants import *
 
 
 def os_name(): # this way it's possible to mock the OS

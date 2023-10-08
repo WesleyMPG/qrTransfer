@@ -1,7 +1,7 @@
 import logging, configparser, sys
 from pathlib import Path
 from ..constants import CONFIG_FILE_NAME
-from . import names as config_name
+from . import constants as config_name
 from .config_generator import gen_config_file
 from utils import get_program_dir
 
@@ -89,5 +89,5 @@ class ConfigHandler(object):
 config_file_path = get_program_dir() / CONFIG_FILE_NAME
 if not config_file_path.exists(): 
     gen_config_file(config_file_path)
-config_handler = ConfigHandler(get_program_dir().joinpath('config.ini'))
+config_handler = ConfigHandler(config_file_path)
 config_obj = config_handler.config
