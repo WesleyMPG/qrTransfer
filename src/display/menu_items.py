@@ -10,7 +10,7 @@ settings_items = [
         "height": dp(32),
     },
     {
-        "name": "random_port",
+        "name": "randomize_port",
         "text": "Randomize http port",
         "left_icon": "folder-zip",
         "viewclass": "SettingsMenuCheckBoxItem",

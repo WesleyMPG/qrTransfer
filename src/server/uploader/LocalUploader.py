@@ -1,5 +1,6 @@
 import logging
-from utils import get_local_network_ip, config_obj, ConfigName
+from utils import get_local_network_ip
+from utils.config import config
 from .AbstractUploader import AbstractUploader
 from .helpers import PortProvider
 
@@ -13,7 +14,7 @@ class LocalUploader(AbstractUploader):
 
     def _get_port(self):
         if not self._randomize_port:
-            return config_obj.get(ConfigName.NETWORK, ConfigName.PORT)
+            return config.get_port()
         return PortProvider().get_random_port()
             
     def _get_link(self, path_list):

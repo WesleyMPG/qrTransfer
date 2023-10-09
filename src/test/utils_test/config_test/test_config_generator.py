@@ -1,5 +1,5 @@
 import pytest
-from utils.config.config_generator import gen_config_file, get_upload_folder, get_static_folder
+from utils.config.config_generator import write_config_file, get_upload_folder, get_static_folder
 
 
 @pytest.fixture
@@ -12,7 +12,7 @@ def config_file_path(tmp_path):
 
 def test_create_file(config_file_path):
     if config_file_path.exists(): config_file_path.unlink()
-    gen_config_file(config_file_path)
+    write_config_file(config_file_path)
     assert config_file_path.exists()
 
 

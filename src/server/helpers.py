@@ -3,10 +3,10 @@ from pathlib import Path
 import logging
 from werkzeug.utils import secure_filename
 from flask import flash
-from utils import config_obj, ConfigName
+from utils.config import config
 
-STATIC_FOLDER = config_obj.get(ConfigName.DIRECTORIES, ConfigName.STATIC_FOLDER)
-UPLOAD_FOLDER = Path(config_obj.get(ConfigName.DIRECTORIES, ConfigName.UPLOAD_FOLDER))
+STATIC_FOLDER = config.get_static_folder()
+UPLOAD_FOLDER = Path(config.get_upload_folder())
 server_log = logging.getLogger('Main.server.py')
 
 

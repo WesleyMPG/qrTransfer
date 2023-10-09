@@ -6,7 +6,8 @@ from kivy.uix.screenmanager import ScreenManager, Screen
 from kivy.uix.textinput import TextInput
 from kivy.core.window import Window
 from PIL import Image
-from utils import ROOT_DIR, config_obj, ConfigName, config_handler
+from utils import ROOT_DIR
+from utils.config import config, config_handler
 from .helper import pillImg_to_texture
 
 
@@ -39,20 +40,20 @@ class SettingsScreen(Screen):
         self.__load_state_on_ui()
 
     def __load_config_on_state(self):
-        self._state['zip?'] = config_obj.getboolean(ConfigName.SAVING, ConfigName.ZIP_FILES)
-        self._state['random_port?'] = config_obj.getboolean(ConfigName.NETWORK, ConfigName.RANDOM_PORT)
-        self._state['port'] = config_obj.get(ConfigName.NETWORK, ConfigName.PORT)
+        self._state['zip?'] = config.get_zip_files().as_bool()
+        self._state['randomize_port?'] = config.get_randomize_port().as_bool()
+        self._state['port'] = config.get_port()
 
     def __load_state_on_ui(self):
         self.ids.zip.active = self._state['zip?']
-        self.ids.random_port.active = self._state['random_port?']
+        self.ids.randomize_port.active = self._state['randomize_port?']
         self.ids.port.text = self._state['port']
 
     def on_toggle_zip(self, value):
         self._state['zip?'] = value
     
-    def on_toggle_random_port(self, value):
-        self._state['random_port?'] = value
+    def on_toggle_randomize_port(self, value):
+        self._state['randomize_port?'] = value
         self.ids.port.disabled = value
 
     def update_port_state(self, port_input, focus_value):
@@ -65,9 +66,9 @@ class SettingsScreen(Screen):
         self.go_back()
 
     def __write_state_on_config(self):
-        config_obj.set(ConfigName.SAVING, ConfigName.ZIP_FILES, str(self._state['zip?']))
-        config_obj.set(ConfigName.NETWORK, ConfigName.RANDOM_PORT, str(self._state['random_port?']))
-        config_obj.set(ConfigName.NETWORK, ConfigName.PORT, str(self._state['port']))
+        config.set_zip_files(str(self._state['zip?']))
+        config.set_randomize_port( str(self._state['randomize_port?']))
+        config.set_port(str(self._state['port']))
 
     def go_back(self):
         self.manager.transition.direction = 'right'

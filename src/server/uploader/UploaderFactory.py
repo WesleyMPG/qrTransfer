@@ -2,15 +2,14 @@ from .LocalUploader import LocalUploader
 from .RemoteUploader import RemoteUploader
 from .AbstractUploader import AbstractUploader
 from server.FileHandlerFactory import FileHandlerFactory
-from utils import config_obj, ConfigName
-
+from utils.config import config
 
 class UploaderFactory(object):
     
     @staticmethod
     def get_uploader(is_local: bool=True) -> AbstractUploader:
         file_handler = FileHandlerFactory.get_file_handler()
-        randomize_port = config_obj.getboolean(ConfigName.NETWORK, ConfigName.RANDOM_PORT)
+        randomize_port = config.get_randomize_port()
         if is_local:
             return LocalUploader(file_handler, randomize_port)
         else:

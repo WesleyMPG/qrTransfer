@@ -27,40 +27,61 @@ def default_config():
 
 @pytest.fixture(scope='module')
 def structure():
-    return {
+    struc = {
         'section1': [('stt1', int), ('stt2', float)],
         'section2': [('stt3', bool)],
     }
+    default = {
+        'section1': {'stt1': '3', 'stt2': '4.3'},
+        'section2': {'stt3': 'False'},
+    }
+    return (struc, default)
 
 
 @pytest.fixture(scope='module')
 def config_validator(structure):
-    return ConfigValidator(structure)
+    return ConfigValidator(*structure)
 
 
 @pytest.fixture(scope='module')
 def structure2():
-    return {
+    struc = {
         'section1': [('stt1', int), ('stt4', str)],
         'section2': [('stt2', float), ('stt3', bool)]
     }
+    default = {
+        'section1': {'stt1': '12', 'stt4': 'name'},
+        'section2': {'stt2': '8.3', 'stt3': 'True'},
+    }
+    return (struc, default)
 
 
 @pytest.fixture(scope='module')
 def structure3():
-    return {
+    struc = {
         'section1': [('stt1', int), ('stt2', int), ('stt3', bool)],
         'section3': [('stt6', bool)],
         'section4': [('stt7', float)],
     }
+    default = {
+        'section1': {'stt1': '3', 'stt2': '5', 'stt3': 'True'},
+        'section3': {'stt6': 'False'},
+        'section4': {'stt7': '7.7'},
+    }
+    return (struc, default)
 
 
 @pytest.fixture(scope='module')
 def structure4():
-    return {
+    struc = {
         'section1': [('stt1', int), ('stt2', int)],
         'section2': [('stt3', bool)],
     }
+    default = {
+        'section1': {'stt1': '99', 'stt2': '88'},
+        'section2': {'stt3': 'False'}
+    }
+    return (struc, default)
 
 
 def test_validate_config_structure(config, structure, default_config):
