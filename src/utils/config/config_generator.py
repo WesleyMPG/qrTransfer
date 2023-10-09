@@ -3,11 +3,23 @@ from configparser import ConfigParser
 from .constants import *
 
 
-def os_name(): # this way it's possible to mock the OS
-    return os.name
+_default_config = None
 
 
-def gen_config_file(file_path):
+def write_config_file(file_path):
+    config_parser = get_default_config()
+    with open(file_path, 'w') as config_file:
+        config_parser.write(config_file)
+
+
+def get_default_config():
+    global _default_config
+    if _default_config is None:
+        _default_config = _gen_default_config()
+    return _default_config
+
+
+def _gen_default_config():
     config_parser = ConfigParser()
     config_parser[DIRECTORIES] = {
         STATIC_FOLDER: get_static_folder(),
@@ -15,10 +27,12 @@ def gen_config_file(file_path):
     }
     config_parser[NETWORK] = {
         PORT: '5000',
-        RANDOM_PORT: 'False',
+        RANDOMIZE_PORT: 'False',
     }
-    with open(file_path, 'w') as config_file:
-        config_parser.write(config_file)
+    config_parser[SAVING] = {
+        ZIP_FILES: 'False'
+    }
+    return config_parser
 
 
 def get_static_folder():
@@ -34,4 +48,7 @@ def get_upload_folder():
     else:
         home = os.getenv('HOME')
         return f'{home}/Downloads'
-    
+
+
+def os_name(): # this way it's possible to mock the OS
+    return os.name

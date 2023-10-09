@@ -1,5 +1,7 @@
 import logging
 from configparser import ConfigParser, NoSectionError, NoOptionError
+from .constants import STRUCTURE
+from .config_generator import get_default_config
 
 
 class ConfigValidator(object):
@@ -48,6 +50,8 @@ class ConfigValidator(object):
             return (value == 'True' or value == 'False')
         elif _type == float:
             return ConfigValidator.__is_float(value)
+        elif _type == str:
+            return value
         else:
             raise BadTypeError(_type)
 
@@ -78,3 +82,9 @@ class BadTypeError(Exception):
      def __init__(self, _type, *args, **kwargs):
         message = f'Bad type: {_type} is not a valid type for a config structure.'
         super().__init__(message, *args, **kwargs)
+
+
+class ConfigValidatorFactory:
+    @staticmethod
+    def get_config_validator():
+        return ConfigValidator(STRUCTURE, get_default_config())
