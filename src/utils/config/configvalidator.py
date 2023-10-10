@@ -5,11 +5,16 @@ from .config_generator import get_default_config
 
 
 class ConfigValidator(object):
-    def __init__(self, structure: dict, default_config: ConfigParser | dict):
+    def __init__(self, structure: dict, default_config: ConfigParser):
         self._log = logging.getLogger(f'Main.{__name__}')
         self._structure = structure
         self._default_config = default_config
+        self._validate_default_config()
         self._invalid_fields: list[tuple[str]] = None
+
+    def _validate_default_config(self):
+        if not self.is_structure_valid(self._default_config):
+            raise InvalidDefaultConfigError()
 
     def validate_config(self, config):
         if self.is_structure_valid(config): return
@@ -65,11 +70,11 @@ class ConfigValidator(object):
         
     def _mark_invalid_field(self, section: str, field: str):
         self._invalid_fields.append((section, field))
-        self._log.warning(f'The value in [{section.upper()}] {field.upper()} is invalid. The default value will be used.')
 
     def _set_default_on_invalid_values(self):
         for section, field in self._invalid_fields:
             self._set_default(section, field)
+            self._log.warning(f'The value in [{section.upper()}] {field.upper()} is invalid. The default value will be used.')
 
     def _set_default(self, section, field):
         try:
@@ -81,6 +86,12 @@ class ConfigValidator(object):
 class BadTypeError(Exception):
      def __init__(self, _type, *args, **kwargs):
         message = f'Bad type: {_type} is not a valid type for a config structure.'
+        super().__init__(message, *args, **kwargs)
+
+
+class InvalidDefaultConfigError(Exception):
+    def __init__(self, *args, **kwargs):
+        message = f'The provided default config doesn\'t follow the provided structure.'
         super().__init__(message, *args, **kwargs)
 
 

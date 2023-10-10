@@ -12,6 +12,11 @@ class TestUploader(object):
         yield
         config.set_randomize_port('False')
 
+
+    @pytest.fixture
+    def disable_randomize_port(self):
+        config.set_randomize_port('False')
+
     def test_generated_link_with_settings_defined_port(self, uploader, example_file_path):
         link = uploader.upload_files([example_file_path])
         port = re.match(r'.*:(\d{4})/', link).group(1)

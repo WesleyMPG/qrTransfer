@@ -9,7 +9,7 @@ class UploaderFactory(object):
     @staticmethod
     def get_uploader(is_local: bool=True) -> AbstractUploader:
         file_handler = FileHandlerFactory.get_file_handler()
-        randomize_port = config.get_randomize_port()
+        randomize_port = config.get_randomize_port().as_bool()
         if is_local:
             return LocalUploader(file_handler, randomize_port)
         else:

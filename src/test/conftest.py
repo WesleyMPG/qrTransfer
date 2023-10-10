@@ -11,7 +11,7 @@ from utils.config import config
 
 PORT = config.get_port()
 BASE_URL = f'http://localhost:{PORT}'
-UPLOAD_FOLDER = Path(config.get_upload_folder)
+UPLOAD_FOLDER = Path(config.get_upload_folder())
 
 
 @pytest.fixture
