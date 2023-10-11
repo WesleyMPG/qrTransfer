@@ -6,12 +6,12 @@ src = Path(__file__).parent.parent
 sys.path.append(str(src))
 
 from server import Server, UploaderFactory
-from utils import config, ConfigName
+from utils.config import config
 
 
-PORT = config.get('network', 'PORT')
+PORT = config.get_port()
 BASE_URL = f'http://localhost:{PORT}'
-UPLOAD_FOLDER = Path(config.get(ConfigName.DIRECTORIES, ConfigName.UPLOAD_FOLDER))
+UPLOAD_FOLDER = Path(config.get_upload_folder())
 
 
 @pytest.fixture
@@ -87,11 +87,11 @@ def example_file(example_file_path):
 
 @pytest.fixture
 def disable_zip_file():
-    config.set('saving', 'ZIP_FILES', 'False')
+    config.set_zip_files('False')
 
 
 @pytest.fixture
 def enable_zip_file():
-    config.set('saving', 'ZIP_FILES', 'True')
+    config.set_zip_files('True')
 
 

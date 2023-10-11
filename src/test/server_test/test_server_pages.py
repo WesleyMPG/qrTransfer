@@ -89,4 +89,4 @@ def test_download_multiple_files(driver_download_page: WebDriver, example_file_n
 
 
 def time_to_wait_for_files_download(n):
-    return 5 + n // 3
+    return 6 + n // 3

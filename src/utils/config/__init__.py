@@ -1,0 +1,1 @@
+from .ConfigHandler import config, config_handler

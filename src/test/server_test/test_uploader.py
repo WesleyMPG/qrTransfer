@@ -1,25 +1,29 @@
 import re
 import pytest
 from server import UploaderFactory
-from utils import config, ConfigName
+from utils.config import config
 
 
 class TestUploader(object):
 
     @pytest.fixture
-    def enable_random_port(self):
-        config.set('network', 'RANDOM_PORT', 'True')
+    def enable_randomize_port(self):
+        config.set_randomize_port('True')
         yield
-        config.set('network', 'RANDOM_PORT', 'False')
+        config.set_randomize_port('False')
+
+    @pytest.fixture
+    def disable_randomize_port(self):
+        config.set_randomize_port('False')
 
     def test_generated_link_with_settings_defined_port(self, uploader, example_file_path):
         link = uploader.upload_files([example_file_path])
         port = re.match(r'.*:(\d{4})/', link).group(1)
-        expected = config.get(ConfigName.NETWORK, ConfigName.PORT)
+        expected = config.get_port()
 
         assert port == expected
 
-    def test_generated_link_with_random_port_enabled(self, enable_random_port, example_file_path):
+    def test_generated_link_with_random_port_enabled(self, enable_randomize_port, example_file_path):
         link1 = UploaderFactory.get_uploader().upload_files([example_file_path])
         u = UploaderFactory.get_uploader()
         link2 = u.upload_files([example_file_path])

@@ -7,7 +7,7 @@ __all__ = ['get_local_network_ip', 'get_logs_dir','get_program_dir',
            'ROOT_DIR']
 
 
-def get_program_dir():
+def get_program_dir() -> Path:
     """Get program dir path.
 
     Detects if what is running is the executable or not and return
