@@ -13,10 +13,15 @@ log = logging.getLogger(f'Main.{__name__}')
 class FileHandler(object):
 
     def __init__(self, static_folder : Path, zip_files=True):
-        self._out_dir = static_folder
+        self._out_dir = self._create_dir_if_not_exist(static_folder)
         self._zip_out = static_folder.joinpath(ZIP_FILE_NAME)
         self._zip_files = zip_files
         self._deletion_list: list[Path] = []
+
+    def _create_dir_if_not_exist(self, out_dir: Path):
+        if not out_dir.exists():
+            out_dir.mkdir(parents=True)
+        return out_dir
     
     def resolve_files(self, path_list : [Path]):
         """Generates the path or path list for the copied files.

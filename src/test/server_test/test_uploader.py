@@ -12,7 +12,6 @@ class TestUploader(object):
         yield
         config.set_randomize_port('False')
 
-
     @pytest.fixture
     def disable_randomize_port(self):
         config.set_randomize_port('False')
