@@ -1,4 +1,4 @@
-import argparse, sys
+import argparse, sys, __main__
 from pathlib import Path
 
 __all__ = ['args']
@@ -6,16 +6,16 @@ __all__ = ['args']
 
 def setup_arg_parser():
     parser = argparse.ArgumentParser(
-        description='Provides a QRcode to download or upload a file. \
-        Commands described here take server\'s poit of view. Have in \
-        mind that '
+        description='Provides a QrCode to download or upload a file. \
+        Commands described here take server\'s point of view. Have that \
+        in mind '
     )
 
     parser.add_argument('-p',
                         metavar='path_list',
                         dest='path_list',
                         nargs='+',
-                        help='- Paths to the files wich download code \
+                        help='- Paths to the files which download code \
                         will be generated. (Only -ptm mode)')
 
     parser.add_argument('-ptm',
@@ -75,7 +75,8 @@ class MockArgs:
     debug = False
 
 
-if not 'pytest' in sys.modules:
+name_of_main_file = Path(__main__.__file__).name
+if not 'pytest' in sys.modules and name_of_main_file == 'main.py':
     args = setup_arg_parser() 
     validate_args(args)
 else:
