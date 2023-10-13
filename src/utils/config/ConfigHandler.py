@@ -4,7 +4,7 @@ from ..constants import CONFIG_FILE_NAME
 from .config_generator import write_config_file
 from .configvalidator import ConfigValidator, ConfigValidatorFactory
 from .configwrapper import ConfigWrapperGenerator, ConfigWrapper
-from utils import get_program_dir
+from utils import get_local_dir
 
 
 __all__ = ['config_handler', 'config']
@@ -45,7 +45,7 @@ class ConfigHandlerFactory:
 
     @staticmethod
     def get_config_handler():
-        file_path = get_program_dir() / CONFIG_FILE_NAME
+        file_path = get_local_dir() / CONFIG_FILE_NAME
         config_parser = configparser.ConfigParser()
         config_validator = ConfigValidatorFactory.get_config_validator()
         return ConfigHandler(file_path, config_parser, config_validator)

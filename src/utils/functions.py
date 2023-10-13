@@ -32,10 +32,18 @@ def get_logs_dir():
         pathlib.Path
     """
     if os_name == 'nt':
-        f = Path(getenv('LOCALAPPDATA')).joinpath('qrTransfer','logs')
+        f = get_local_dir().joinpath('qrTransfer','logs')
     else:
-        f = get_program_dir().joinpath('logs')
+        f = get_local_dir().joinpath('logs')
     if not f.exists(): f.mkdir(parents=True)
+    return f
+
+
+def get_local_dir():
+    if os_name == 'nt':
+        f = Path(getenv('LOCALAPPDATA'))
+    else:
+        f = get_program_dir()
     return f
 
 
