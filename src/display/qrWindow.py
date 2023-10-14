@@ -100,8 +100,8 @@ class QrApp(MDApp):
         self.icon = str(p)
 
     def __add_screens(self):
-        self._sm.add_widget(SettingsScreen(name='settings'))
         self._sm.add_widget(QrFrameScreen(self._code, name='qrframe'))
+        self._sm.add_widget(SettingsScreen(name='settings'))
 
 
 def qr_window(code, at_close=None):

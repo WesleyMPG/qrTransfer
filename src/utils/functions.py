@@ -3,9 +3,6 @@ from os import getenv, name as os_name
 from pathlib import Path
 from socket import gethostname, gethostbyname
 
-__all__ = ['get_local_network_ip', 'get_logs_dir','get_program_dir', 
-           'ROOT_DIR']
-
 
 def get_program_dir() -> Path:
     """Get program dir path.
@@ -31,19 +28,15 @@ def get_logs_dir():
     Returns:
         pathlib.Path
     """
-    if os_name == 'nt':
-        f = get_local_dir().joinpath('qrTransfer','logs')
-    else:
-        f = get_local_dir().joinpath('logs')
-    if not f.exists(): f.mkdir(parents=True)
-    return f
+    return get_local_dir().joinpath('logs')
 
 
 def get_local_dir():
     if os_name == 'nt':
-        f = Path(getenv('LOCALAPPDATA'))
+        f = Path(getenv('LOCALAPPDATA')).joinpath('qrTransfer')
     else:
         f = get_program_dir()
+    if not f.exists(): f.mkdir(parents=True)
     return f
 
 
