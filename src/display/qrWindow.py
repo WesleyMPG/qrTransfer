@@ -17,6 +17,8 @@ kv_file = DISPLAY_DIR.joinpath('kvFiles', 'qrWindow.kv')
 
 Builder.load_file(str(kv_file))
 
+#TODO: separar as telas em kv files diferentes
+#TODO: criar a configuração de escolher ip
 
 class QrFrameScreen(Screen):
     """Container for the qrCode image

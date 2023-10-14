@@ -10,3 +10,4 @@ py==1.11.0
 selenium==4.9.1
 pytest-selenium==4.0.1
 pytest-mock==3.11.1
+psutil==5.9.5

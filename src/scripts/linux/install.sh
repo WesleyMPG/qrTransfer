@@ -27,23 +27,6 @@ license_agreement() {
 }
 
 
-write_conf() {
-    conf_path="$folder/config.ini"
-    if [[ -f $conf_path ]]; then
-        return
-    fi
-    (printf "[directories]\n"                  &&
-    printf "STATIC_FOLDER = /tmp/qrTransfer\n" &&
-    printf "UPLOAD_FOLDER = $HOME/Downloads\n" &&
-    printf "\n"                                &&
-    printf "[network]\n"                       &&
-    printf "PORT = 5000\n"                     &&
-    printf "\n"                                &&
-    printf "[lang]\n"                          &&
-    printf "LANGUAGE = en\n")                  > "$conf_path"
-}
-
-
 write_mtp_shortcut() {
     path="/usr/share/applications/qrTransfer-MTP.desktop"
     if [[ -f $path ]]; then
@@ -88,7 +71,7 @@ xfce_context_menu() {
 
     asw=""
     (echo "
-    At Thunar qrTransfer will be placed under 'send to' submenu. 
+    At Thunar, qrTransfer will be placed under 'send to' submenu. 
     However this menu doesn't appear on desktop. To use qrTransfer 
     also on desktop files a shortcut can be added so you'll be able
     to open the files through 'open with other application...'.
