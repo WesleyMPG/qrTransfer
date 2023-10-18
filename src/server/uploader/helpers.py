@@ -1,5 +1,28 @@
 import socket
 from random import randint
+from utils.config import config
+from utils import get_local_network_ip
+
+class URLProvider:
+
+    @staticmethod
+    def get_url():
+        ip = URLProvider.__get_ip()
+        port = URLProvider.__get_port()
+        return f'http://{ip}:{port}'
+
+    @staticmethod
+    def __get_ip():
+        if config.get_auto_select_ip().as_bool():
+            return get_local_network_ip()
+        else:
+            return config.get_ip()
+        
+    @staticmethod
+    def __get_port():
+        if not config.get_randomize_port().as_bool():
+            return config.get_port()
+        return PortProvider().get_random_port()
 
 
 class PortProvider:
