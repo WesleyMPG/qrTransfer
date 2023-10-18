@@ -1,21 +1,13 @@
 import logging
-from utils import get_local_network_ip
-from utils.config import config
 from .AbstractUploader import AbstractUploader
-from .helpers import PortProvider
 
 
 class LocalUploader(AbstractUploader):
 
-    def __init__(self, file_handler, randomize_port=False):
-        super().__init__(file_handler, randomize_port, logging.getLogger(f'Main.{__name__}'))
-        self._ip = get_local_network_ip()
-        self._port = self._get_port()
-
-    def _get_port(self):
-        if not self._randomize_port:
-            return config.get_port()
-        return PortProvider().get_random_port()
+    def __init__(self, file_handler, ip, port):
+        super().__init__(file_handler, logging.getLogger(f'Main.{__name__}'))
+        self._ip = ip
+        self._port = port
             
     def _get_link(self, path_list):
         self._uploaded_files = self._fhandler.resolve_files(path_list)

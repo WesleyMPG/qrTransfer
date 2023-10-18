@@ -2,10 +2,9 @@
 
 class AbstractUploader(object):
 
-    def __init__(self, file_handler, randomize_port, log):
+    def __init__(self, file_handler, log):
         self._log = log
         self._fhandler = file_handler
-        self._randomize_port = randomize_port
         self._uploaded_files = []
 
         
