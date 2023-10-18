@@ -28,6 +28,8 @@ def _gen_default_config():
     config_parser[NETWORK] = {
         PORT: '5000',
         RANDOMIZE_PORT: 'False',
+        IP: '',
+        AUTO_SELECT_IP: 'True',
     }
     config_parser[SAVING] = {
         ZIP_FILES: 'False'
