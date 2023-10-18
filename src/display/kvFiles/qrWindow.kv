@@ -1,4 +1,5 @@
 #:kivy 2.2.1
+#:include display/kvFiles/settings_screen.kv
 
 <QrFrameScreen>
     BoxLayout:
@@ -31,77 +32,3 @@
         Image:
             id: img
             size_hint: (1, .8)
-
-
-<SettingsScreen>
-    FloatLayout:
-        size: root.size
-        canvas.before:
-            Color:
-                rgba: .14, .14, .14, 1
-            Rectangle:
-                pos: self.pos
-                size: self.size
-        StackLayout:
-            size_hint: .8, None
-            height: '50dp'
-            pos_hint: {'center_x': .5, 'top': .9}
-            canvas.before:
-                Color:
-                    rgba: .24, .24, .24, 1
-                RoundedRectangle:
-                    pos: self.x, self.y - self.minimum_height + dp(50)
-                    size: self.width, self.minimum_height
-                    radius: [(5, 5), (5, 5), (5, 5), (5, 5)]
-            Label:
-                text: 'Settings'
-                font_size: '20sp'
-                canvas.before:
-                    Color:
-                        rgba: .8, .8, .8, 1
-                    Line:
-                        points: [self.x+dp(20), self.y, self.right-dp(20), self.y]
-                        width: 1
-            BoxLayout:
-                orientation: 'horizontal'
-                SLabel:
-                    text: 'Zip files'
-                Switch:
-                    id: zip
-                    on_active: root.on_toggle_zip(self.active)
-            BoxLayout:
-                orientation: 'horizontal'
-                SLabel:
-                    text: 'Randomize Port'
-                Switch:
-                    id: randomize_port
-                    on_active: root.on_toggle_randomize_port(self.active)
-            BoxLayout:
-                SLabel:
-                    text: 'Port'
-                BoxLayout:
-                    padding: ['40dp', '8dp', '40dp', '12dp']
-                    PortInput:
-                        id: port
-                        on_focus: root.update_port_state(self, self.focus)
-            BoxLayout:
-                orientation: 'horizontal'
-                spacing: '40dp'
-                padding: [dp(70), dp(11)]
-                Button:
-                    text: 'Cancel'
-                    on_release:
-                        root.load_config()
-                        root.go_back()
-                Button:
-                    text: 'Save'
-                    on_release: root.on_save()
-
-
-<SLabel@Label>:
-    text_size: dp(120), None
-    font_size: '15sp'
-
-<PortInput>:
-    input_filter: 'int'
-    on_text: self.on_text_change(self.text)
