@@ -1,7 +1,8 @@
 import sys
 from os import getenv, name as os_name
 from pathlib import Path
-from socket import gethostname, gethostbyname
+from socket import gethostname, gethostbyname, AF_INET
+import psutil
 
 
 def get_program_dir() -> Path:
@@ -48,6 +49,15 @@ def get_local_network_ip():
     """
     hostname = gethostname()
     return gethostbyname(hostname)
+
+
+def get_ip_list() -> list[str]:
+    ip_addresses = []
+    for addrs in psutil.net_if_addrs().values():
+        for addr in addrs:
+            if addr.family == AF_INET:
+                ip_addresses.append(addr.address)
+    return ip_addresses
     
 
 #: Path to src directory

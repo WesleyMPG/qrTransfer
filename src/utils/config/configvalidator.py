@@ -14,7 +14,7 @@ class ConfigValidator(object):
 
     def _validate_default_config(self):
         if not self.is_structure_valid(self._default_config):
-            raise InvalidDefaultConfigError()
+            raise InvalidDefaultConfigError(self._invalid_fields[0])
 
     def validate_config(self, config):
         if self.is_structure_valid(config): return
@@ -56,7 +56,7 @@ class ConfigValidator(object):
         elif _type == float:
             return ConfigValidator.__is_float(value)
         elif _type == str:
-            return value
+            return True
         else:
             raise BadTypeError(_type)
 
@@ -90,8 +90,8 @@ class BadTypeError(Exception):
 
 
 class InvalidDefaultConfigError(Exception):
-    def __init__(self, *args, **kwargs):
-        message = f'The provided default config doesn\'t follow the provided structure.'
+    def __init__(self, invalid, *args, **kwargs):
+        message = f'The provided default config doesn\'t follow the provided structure: {invalid}'
         super().__init__(message, *args, **kwargs)
 
 

@@ -1,6 +1,6 @@
 import qrcode as qr
 from time import sleep
-from server import Server, UploaderFactory
+from server import Server, UploaderFactory, URLProvider
 from utils import get_local_network_ip, logger
 from utils.cli import args
 from utils.config import config
@@ -25,7 +25,7 @@ class QrTransfer(object):
         """Start and wait for server to be up."""
         Server.run()
         while not Server.is_up():
-            sleep(1)        
+            sleep(1)  
 
     def __start_transfer_mode(self):
         if args.pc_to_mobile:
@@ -53,8 +53,7 @@ class QrTransfer(object):
         qr_window(code)
 
     def __generate_mobile_to_pc_code(self):
-        ip = get_local_network_ip()
-        link = f'http://{ip}:{QrTransfer.PORT}/upload/'
+        link = f'{URLProvider.get_url()}/upload/'
         return self.__generate_qrCode(link)
 
     def __generate_qrCode(self, text) -> PIL_Image:
