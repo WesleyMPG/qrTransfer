@@ -20,8 +20,8 @@ pyinstaller^
  --add-data "%root%\resources;resources"^
  --add-data "%root%/server/templates;server/templates"^
  --icon "%root%\resources\icon.ico"^
- --onefile --distpath "%out%\dist"^
- --workpath "%out%\build" -n qrTransfer.exe "%root%\main.py"
+ --distpath "%out%\dist"^
+ --workpath "%out%\build" -n qrTransfer "%root%\main.py"
  
 
 mkdir %out%\dist\scripts

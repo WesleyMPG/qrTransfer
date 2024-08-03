@@ -11,3 +11,4 @@ selenium==4.9.1
 pytest-selenium==4.0.1
 pytest-mock==3.11.1
 psutil==5.9.5
+pyinstaller==4.8

@@ -112,7 +112,7 @@ There are scripts to do an automated build and generate a folder with the same c
 $ cd qrTransfer 
 $ src/scripts/linux/build.sh # on linux
 
-$ src/scripts/windows/build.bat # on windows
+$ src\\scripts\\windows\\build.bat # on windows
 ```
 
 # Known issues
