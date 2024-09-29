@@ -29,7 +29,11 @@ def get_logs_dir():
     Returns:
         pathlib.Path
     """
-    return get_local_dir().joinpath('logs')
+    logs_dir =  get_local_dir().joinpath('logs')
+    if not logs_dir.exists():
+        logs_dir.mkdir()
+    
+    return logs_dir
 
 
 def get_local_dir():

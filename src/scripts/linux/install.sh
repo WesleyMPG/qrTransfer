@@ -122,13 +122,13 @@ ask_manager() {
 
 copy() {
     license_agreement
+    
     cp  qrTransfer \
         uninstall.sh \
         LICENSE \
         icon.png "$folder/"
     # put an "if succeed" on copy
 
-    write_conf
     write_mtp_shortcut
     sudo ln -s "$folder/qrTransfer" "/usr/local/bin/qrTransfer"
 

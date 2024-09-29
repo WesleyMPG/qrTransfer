@@ -1,11 +1,14 @@
+import sys
+from pathlib import Path
 import qrcode as qr
 from time import sleep
 from server import Server, UploaderFactory, URLProvider
-from utils import get_local_network_ip, logger
+from utils import logger
 from utils.cli import args
 from utils.config import config
 from PIL import Image as PIL_Image
 from utils.config import config_handler
+from kivy.resources import resource_add_path
 
 
 class QrTransfer(object):
@@ -65,6 +68,8 @@ class QrTransfer(object):
 
 if __name__ == "__main__":
     try:
+        if hasattr(sys, '_MEIPASS'):
+            resource_add_path(Path(sys._MEIPASS))
         QrTransfer().run()
     except Exception as e:
         logger.exception('An unexpected behavior ocurred.')
